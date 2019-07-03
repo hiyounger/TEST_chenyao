@@ -9,6 +9,14 @@ db.init_app(app)
 @app.route('/')
 def index():
     return 'Hellow Flask'
+@app.route('/initdb',methods=['POST'])
+def init_db():
+    db.create_all()
+    ret_dic={
+        'return_code':200,
+        'return_msg':'Init db success'
+    }
+    return jsonify(ret_dic)
 @app.route('/members',methods=['POST'])
 @app.route('/members/<condition>',methods=['GET','PATCH'])
 def surpermark_member(condition=None):
