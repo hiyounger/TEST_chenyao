@@ -9,7 +9,17 @@ db.init_app(app)
 @app.route('/')
 def index():
     return 'Hellow Flask'
-
+@app.route('/members',methods=['POST'])
+@app.route('/members/<condition>',methods=['GET','PATCH'])
+def surpermark_member(condition=None):
+    if condition==None:
+        # 写http：//127.0.0.1/members下的程序
+        pass
+    else:
+        if request.method=='GET':
+            pass
+        elif request.method=='请求方法':
+            pass
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=80,debug=True)
