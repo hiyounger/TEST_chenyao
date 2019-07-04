@@ -54,6 +54,17 @@ def get_members_by_tel(condition=None):
             ret_dic['return_msg'] = 'Get Member by tel success'
             return jsonify(ret_dic)
 
+ # 通过uid查询会员信息(zhangjun)
+@app.route('/mermber/<condition>' , methods=['GET'])
+def serch_member_by_uid(condition=None):
+    if request.method == 'GET':
+        if condition != None:
+            uid = condition.split('_')[-1]
+            ret_dic = Member.serch_member_by_uid(uid)
+            ret_dic['return_code'] = 200
+            ret_dic['return_msg'] = 'Get Member by tel success'
+            return jsonify(ret_dic)
+
 
 
 if __name__ == '__main__':

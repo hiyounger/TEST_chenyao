@@ -24,24 +24,44 @@ class Member(db.Model):
         return ret_dic
 
 
-#根据手机号查找会员列表  ---liu
-@classmethod
-def search_by_tel(cls, tel):
-    member_list = []
-    if len(tel) == 11:
-        member = Member.query.filter(Member.tel.endswith(tel))
-        member_info = {'uid': member.uid, 'tel': member.tel, 'discount': member.disc, 'score': member.score,
-                       'active': member.active}
-        member_list.append(member_info)
-    else:
-        db_query = Member.query.filter(Member.tel.endwith(tel))
-        for member in db_query:
-            member_info = {'uid': member.uid, 'tel': member.tel, 'discount': member.discount, 'score': member.score,
+    # 根据手机号查找会员列表  ---liu
+    @classmethod
+    def search_by_tel(cls, tel):
+        member_list = []
+        if len(tel) == 11:
+            member = Member.query.filter(Member.tel.endswith(tel))
+            member_info = {'uid': member.uid, 'tel': member.tel, 'discount': member.disc, 'score': member.score,
                            'active': member.active}
             member_list.append(member_info)
-            ret_dic = {
-                'new_member': member_info,
-                'count': len(member_list),
-                'members': member_list
-            }
-    return ret_dic
+        else:
+            db_query = Member.query.filter(Member.tel.endwith(tel))
+            for member in db_query:
+                member_info = {'uid': member.uid, 'tel': member.tel, 'discount': member.discount, 'score': member.score,
+                               'active': member.active}
+                member_list.append(member_info)
+                ret_dic = {
+                    'new_member': member_info,
+                    'count': len(member_list),
+                    'members': member_list
+                }
+        return ret_dic
+
+ # 通过uid查询会员信息(zhangjun)
+    @classmethod
+    def serch_member_by_uid(cls, uid):
+        for i in range(len(Member.members)):
+            if Member.members[i]['uid'] == uid:
+                ret_dic = {
+                    'uid': Member.members[i]['uid'],
+                    'tel': Member.members[i]['tel'],
+                    'discount': Member.members[i]['discount'],
+                    'score': Member.members[i]['score'],
+                    'active':Member.members[i]['active'],
+                }
+                return ret_dic
+            else:
+                ret_dic={
+                    'ret_code':'please input again',
+                    'ret_msg':'serch,fail'
+                }
+            return ret_dic
