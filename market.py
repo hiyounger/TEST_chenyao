@@ -24,6 +24,7 @@ def init_db():
     return jsonify(ret_dic)
 
 
+# 根据手机号添加会员  ---童一鉴
 @app.route('/member', methods=['POST'])
 def member_actions(condition=None):
     # 1.处理创建
@@ -40,6 +41,19 @@ def member_actions(condition=None):
             "member": mem_info
         }
         return jsonify(ret_dic)
+
+
+# 根据手机号码查找会员列表  ---liu
+@app.route('/mermber/<condition>' , methods=['GET'])
+def get_members_by_tel(condition=None):
+    if request.method == 'GET':
+        if condition.startswith('tel_'):
+            tel = condition.split('_')[-1]
+            ret_dic = Member.search_by_tel(tel)
+            ret_dic['return_code'] = 200
+            ret_dic['return_msg'] = 'Get Member by tel success'
+            return jsonify(ret_dic)
+
 
 
 if __name__ == '__main__':
