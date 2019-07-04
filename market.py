@@ -47,6 +47,16 @@ def surpermark_member(condition=None):
         elif request.method=='请求方法':
             pass
 
+# 查找大于给定积分的用户
+@app.route('/filter/score')
+def get_members_byScore():
+    score=request.args['le']
+    ret_dict=Member.get_member_byScore(score)
+    ret_dict['return_code']=200
+    ret_dict['return_msg']="Filter user success"
+    print (ret_dict)
+    return jsonify(ret_dict)
+
 @app.route('/member/uid',methods=['DELETD'])
 def delete_member():
     if request.method == 'DELETE':
