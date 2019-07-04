@@ -61,8 +61,6 @@ def get_members_byScore():
     return jsonify(ret_dict)
 
 
-
-
 # 根据手机号码注册用户
 @app.route('/member', methods=['POST'])
 def member_actions(condition=None):
