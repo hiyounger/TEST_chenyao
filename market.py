@@ -113,6 +113,22 @@ def update_members_info():
     return jsonify(ret_dic)
 
 
+# 根据UID注销
+@app.route('/member/<condition>', methods=['DELETE'])
+def delete_member(condition=None):
+    if request.method == 'DELETE':
+        uid = condition.split("_")[-1]
+        mem= Member.query.filter(Member.uid==uid)[0]
+        db.session.delete(mem)
+        db.session.commit()
+        ret_dic = Member.delete_member(uid)
+        ret_dic['return_code'] = 200
+        ret_dic['return_msg'] = 'Delete user success'
+        print(ret_dic)
+        return jsonify(ret_dic)
+
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)

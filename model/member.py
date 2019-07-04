@@ -134,3 +134,24 @@ class Member(db.Model):
             "members": member_list
         }
         return ret_dic
+
+    # 根据uid注销
+    @classmethod
+    def delete_member(cls, uid):
+        for i in range(len(Member.member)):
+            if Member.member[i]['uid'] == uid:
+                Member.member[i]['state'] = '0'
+                Member.member[i]['discount'] = '1'
+                ret_dic = {
+                    'uid': Member.member[i]['uid'],
+                    'tel': Member.member[i]['tel'],
+                    'state': '0',
+                    'discount': Member.member[i]['discount']
+                }
+                return ret_dic
+            else:
+                ret_dic = {
+                    'ret_code': 400,
+                    'ret_msg': 'Delete,fail'
+                }
+            return ret_dic
