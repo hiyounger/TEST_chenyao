@@ -19,7 +19,7 @@ def init_db():
         'return_msg': 'Init db success'
     }
     return jsonify(ret_dic)
-
+# 查找大于给定积分的用户
 @app.route('/filter/score')
 def get_members_byScore():
     score=request.args['le']
@@ -31,8 +31,8 @@ def get_members_byScore():
 
 
 
-@app.route('/member/uid',methods=['DELETD'])
 
+# 根据手机号码注册用户
 @app.route('/member', methods=['POST'])
 def member_actions(condition=None):
     # 1.处理创建
@@ -45,7 +45,7 @@ def member_actions(condition=None):
         }
         return jsonify(ret_dic)
 
-
+# 根据id删除用户
 @app.route('/member/uid', methods=['DELETD'])
 def delete_member():
     if request.method == 'DELETE':
