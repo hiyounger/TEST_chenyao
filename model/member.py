@@ -157,6 +157,12 @@ class Member(db.Model):
                     'state': '0',
                     'discount': Member.members[i]['discount']
                 }
+                return ret_dic
+            else:
+                ret_dic={
+                    'ret_code':400,
+                    'ret_msg':'Delete,fail'
+                }
             return ret_dic
 
     # 根据实付金额更改用户积分
