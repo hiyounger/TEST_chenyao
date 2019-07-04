@@ -74,8 +74,6 @@ def get_members_byScore():
     return jsonify(ret_dict)
 
 
-
-
 # 根据手机号码注册用户
 @app.route('/member', methods=['POST'])
 def member_actions(condition=None):
@@ -115,7 +113,6 @@ def get_members_by_tel(condition=None):
             ret_dic['return_code'] = 200
             ret_dic['return_msg'] = 'Get Member by tel success'
             return jsonify(ret_dic)
-
 
 
 
