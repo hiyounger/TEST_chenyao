@@ -47,14 +47,18 @@ def member_actions(condition=None):
 
 # 根据id删除用户
 @app.route('/member/uid', methods=['DELETD'])
-def delete_member():
+def delete_member(uid):
     if request.method == 'DELETE':
-        uid = request.form['uid']
+        mem_uid = request.form['uid']
+        mem= Member.query.filter(Member.uid==mem_uid)[0]
+        db.session.delete(mem)
+        db.session.commit()
         ret_dic = Member.delete_member(uid)
         ret_dic['return_code'] = 200
         ret_dic['return_msg'] = 'Delete user success'
         print(ret_dic)
         return jsonify(ret_dic)
+
 
 
 

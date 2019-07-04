@@ -76,16 +76,20 @@ class Member(db.Model):
             "members": member_list
         }
         return ret_dic
-
+    # 根据UID注销会员信息
     @classmethod
     def delete_member(cls, uid):
-        mem = Member.query.all()
-        if mem.uid==uid:
-            db.session.delete(mem)
-            db.session.commit()
-        ret_dic = {"uid": mem.uid, 'tel': mem.tel, 'discount': mem.discount, 'score': mem.score,
-                   'active': mem.active}
-        return ret_dic
+        for i in range(len(Member.members)):
+            if Member.members[i]['uid'] == uid:
+                Member.members[i]['state'] ='0'
+                Member.members[i]['discount'] = '1'
+                ret_dic = {
+                    'uid': Member.members[i]['uid'],
+                    'tel': Member.members[i]['tel'],
+                    'state': '0',
+                    'discount': Member.members[i]['discount']
+                }
+            return ret_dic
 
 
 
