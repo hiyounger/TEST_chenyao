@@ -18,6 +18,15 @@ def init_db():
     }
     return jsonify(ret_dic)
 
+@app.route('/filter/score')
+def get_members_byScore():
+    score=request.args['le']
+    ret_dict=Member.get_member_byScore(score)
+    ret_dict['return_code']=200
+    ret_dict['return_msg']="Filter user success"
+    print (ret_dict)
+    return jsonify(ret_dict)
+
 
 
 
