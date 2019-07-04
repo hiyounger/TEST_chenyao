@@ -18,7 +18,7 @@ class Member(db.Model):
         member.tel = tel
         db.session.add(member)
         db.session.commit()
-        ret_dic = cls.search_by_tel(tel)['members'][0]
+        ret_dic = cls.serch_by_tel(tel)['members'][0]
         return ret_dic
     @classmethod
     def add_memebr(cls, tel):
@@ -26,7 +26,7 @@ class Member(db.Model):
         member.tel = tel
         db.session.add(member)
         db.session.commit()
-        ret_dic = cls.search_by_tel(tel)['members'][0]
+        ret_dic = cls.serch_by_tel(tel)['members'][0]
         return ret_dic
 
 
