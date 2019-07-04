@@ -64,7 +64,15 @@ def serch_member_by_uid(condition=None):
             ret_dic['return_code'] = 200
             ret_dic['return_msg'] = 'Get Member by tel success'
             return jsonify(ret_dic)
-
+# 查找大于给定积分的用户--闫振兴
+@app.route('/filter/score')
+def get_members_byScore():
+    score = request.args['le']
+    ret_dict = Member.get_member_byScore(score)
+    ret_dict['return_code'] = 200
+    ret_dict['return_msg'] = "Filter user success"
+    print (ret_dict)
+    return jsonify(ret_dict)
 
 
 if __name__ == '__main__':
