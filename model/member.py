@@ -42,8 +42,6 @@ class Member(db.Model):
                 }
         return ret_dic
 
-
-
     # 获取积分大于指定值的会员列表
     @classmethod
     def get_member_byScore(cls,score):
@@ -88,7 +86,6 @@ class Member(db.Model):
             #  "members":member_list
             # }
             # return ret_dic
-
 
 
     @classmethod  # 根据手机号查询会员信息
