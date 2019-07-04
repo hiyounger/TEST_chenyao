@@ -17,6 +17,39 @@ def init_db():
         'return_msg':'Init db success'
     }
     return jsonify(ret_dic)
+
+
+@app.route('/members', methods=['POST'])
+@app.route('/members/<condition>', methods=['GET', 'PATCH'])
+# 根据实付金额更改用户积分
+def surpermark_member(condition=None):
+    # 1.处理创建
+    if request.method == 'POST':
+        tel = request.form['tel']
+        mem_info = Member.add_member_by_tel(tel)
+        ret_dic = {
+            "return_code": 200, "return_msg": "add member success",
+            "member": mem_info
+        }
+        return jsonify(ret_dic)
+    if condition == None:
+        if request.method == 'PATCH':
+            uid = int(condition.split("_")[-1])
+            score = int(request.form['score'])
+            ret_dic = Member.update_member_score(uid, score)
+            ret_dic['return_code'] = 200
+            ret_dic['return_msg'] = 'update score success'
+            return jsonify(ret_dic)
+
+        # 写http：//127.0.0.1/members下的程序
+        pass
+    else:
+        if request.method == 'GET':
+            pass
+        elif request.method == '请求方法':
+            pass
+
+
 # 查找大于给定积分的用户
 @app.route('/filter/score')
 def get_members_byScore():

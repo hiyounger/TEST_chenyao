@@ -11,6 +11,15 @@ class Member(db.Model):
 
     __tablename__ = 'members'
 
+    # 根据手机号码注册新用户--童一鉴
+    @classmethod
+    def add_member_by_tel(cls, tel):
+        member = Member()
+        member.tel = tel
+        db.session.add(member)
+        db.session.commit()
+        ret_dic = cls.search_by_tel(tel)['members'][0]
+        return ret_dic
     @classmethod
     def add_memebr(cls, tel):
         member = Member()
@@ -120,7 +129,14 @@ class Member(db.Model):
                    'active': mem.active}
         return ret_dic
 
+    # 根据实付金额更改用户积分
+    @classmethod
+    def update_member_score(cls, uid, score):
+        member = Member.query.filter(Member.uid == uid).first()
+        score_before = member.score
+        member.score = score_before + score
+        db.session.commit()
 
-
-
-
+        ret_dic = {"uid": member.uid, 'tel': member.tel, 'score_before': score_before, 'score_after': member.score,
+                   'score_change': score}
+        return ret_dic
