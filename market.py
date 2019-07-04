@@ -17,17 +17,45 @@ def init_db():
         'return_msg':'Init db success'
     }
     return jsonify(ret_dic)
-@app.route('/members',methods=['POST'])
-@app.route('/members/<condition>',methods=['GET','PATCH'])
-def surpermark_member(condition=None):
-    if condition==None:
-        # 写http：//127.0.0.1/members下的程序
-        pass
-    else:
-        if request.method=='GET':
-            pass
-        elif request.method=='请求方法':
-            pass
+# 查找大于给定积分的用户
+@app.route('/filter/score')
+def get_members_byScore():
+    score=request.args['le']
+    ret_dict=Member.get_member_byScore(score)
+    ret_dict['return_code']=200
+    ret_dict['return_msg']="Filter user success"
+    print (ret_dict)
+    return jsonify(ret_dict)
+
+
+
+
+# 根据手机号码注册用户
+@app.route('/member', methods=['POST'])
+def member_actions(condition=None):
+    # 1.处理创建
+    if request.method == 'POST':
+        tel = request.form['tel']
+        mem_info = Member.add_member_by_tel(tel)
+        ret_dic = {
+            "return_code": 200, "return_msg": "add member success",
+            "member": mem_info
+        }
+        return jsonify(ret_dic)
+
+# 根据id删除用户
+@app.route('/member/uid', methods=['DELETD'])
+def delete_member():
+    if request.method == 'DELETE':
+        uid = request.form['uid']
+        ret_dic = Member.delete_member(uid)
+        ret_dic['return_code'] = 200
+        ret_dic['return_msg'] = 'Delete user success'
+        print(ret_dic)
+        return jsonify(ret_dic)
+
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=80,debug=True)
