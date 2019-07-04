@@ -21,6 +21,15 @@ def init_db():
 @app.route('/members/<condition>',methods=['GET','PATCH'])
 # 根据实付金额更改用户积分
 def surpermark_member(condition=None):
+    # 1.处理创建
+    if request.method == 'POST':
+        tel = request.form['tel']
+        mem_info = Member.add_member_by_tel(tel)
+        ret_dic = {
+            "return_code": 200, "return_msg": "add member success",
+            "member": mem_info
+        }
+        return jsonify(ret_dic)
     if condition==None:
         if request.method == 'PATCH':
             uid = int(condition.split("_")[-1])
@@ -38,8 +47,15 @@ def surpermark_member(condition=None):
         elif request.method=='请求方法':
             pass
 
-
-
+@app.route('/member/uid',methods=['DELETD'])
+def delete_member():
+    if request.method == 'DELETE':
+        uid = request.form['uid']
+        ret_dic = Member.delete_member(uid)
+        ret_dic['return_code'] = 200
+        ret_dic['return_msg'] = 'Delete user success'
+        print(ret_dic)
+        return jsonify(ret_dic)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=80,debug=True)

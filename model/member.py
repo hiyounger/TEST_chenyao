@@ -11,6 +11,39 @@ class Member(db.Model):
 
     __tablename__='members'
 
+
+    @classmethod  # 根据手机号查询会员信息
+    def search_by_tel(cls, tel):
+        member_list = []
+        if len(tel) == 11:  # 当号码为11位时
+            member = Member.query.filter(Member.tel == tel).first()
+            member_info = {"uid": member.uid, "tel": member.tel, "discount": member.discount,
+                           "score": member.score, "active": member.active}
+            member_list.append(member_info)
+        else:  # 输入尾号位数查询会员信息
+            db_query = Member.query.filter(Member.tel.endswith(tel))
+            for member in db_query:
+                member_info = {"uid": member.uid, "tel": member.tel, "discount": member.discount,
+                               "score": member.score, "active": member.active}
+                member_list.append(member_info)
+
+        ret_dic = {
+            "count": len(member_list),
+            "members": member_list
+        }
+        return ret_dic
+
+    @classmethod
+    def delete_member(cls, uid):
+        mem = Member.query.all()
+        if mem.uid==uid:
+            db.session.delete(mem)
+            db.session.commit()
+        ret_dic = {"uid": mem.uid, 'tel': mem.tel, 'discount': mem.discount, 'score': mem.score,
+                   'active': mem.active}
+        return ret_dic
+
+
     # 根据实付金额更改用户积分
     @classmethod
     def update_member_score(cls, uid, score):
