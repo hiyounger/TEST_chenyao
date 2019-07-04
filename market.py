@@ -29,6 +29,15 @@ def get_members_byScore():
 
 
 
+@app.route('/member/uid',methods=['DELETD'])
+def delete_member():
+    if request.method == 'DELETE':
+        uid = request.form['uid']
+        ret_dic = Member.delete_member(uid)
+        ret_dic['return_code'] = 200
+        ret_dic['return_msg'] = 'Delete user success'
+        print(ret_dic)
+        return jsonify(ret_dic)
 
 
 
