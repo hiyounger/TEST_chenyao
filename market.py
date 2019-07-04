@@ -9,12 +9,14 @@ db.init_app(app)
 @app.route('/')
 def index():
     return 'Hellow Flask'
-@app.route('/initdb',methods=['POST'])
+
+
+@app.route('/initdb', methods=['POST'])
 def init_db():
     db.create_all()
-    ret_dic={
-        'return_code':200,
-        'return_msg':'Init db success'
+    ret_dic = {
+        'return_code': 200,
+        'return_msg': 'Init db success'
     }
     return jsonify(ret_dic)
 
@@ -30,6 +32,21 @@ def get_members_byScore():
 
 
 @app.route('/member/uid',methods=['DELETD'])
+
+@app.route('/member', methods=['POST'])
+def member_actions(condition=None):
+    # 1.处理创建
+    if request.method == 'POST':
+        tel = request.form['tel']
+        mem_info = Member.add_member_by_tel(tel)
+        ret_dic = {
+            "return_code": 200, "return_msg": "add member success",
+            "member": mem_info
+        }
+        return jsonify(ret_dic)
+
+
+@app.route('/member/uid', methods=['DELETD'])
 def delete_member():
     if request.method == 'DELETE':
         uid = request.form['uid']
