@@ -10,16 +10,16 @@ class Member(db.Model):
     active = db.Column(db.Integer,nullable=False,default=1)
 
     __tablename__ = 'members'
+    # 根据手机号码注册新用户--童一鉴
+    @classmethod
+    def add_member_by_tel(cls, tel):
+        member = Member()
+        member.tel = tel
+        db.session.add(member)
+        db.session.commit()
+        ret_dic = cls.search_by_tel(tel)['members'][0]
+        return ret_dic
 
-    # @classmethod
-    # def add_memebr(cls, tel):
-    #     member = Member()
-    #     member.tel = tel
-    #     db.session.add(member)
-    #     db.session.commit()
-    #     ret_dic = cls.search_by_tel(tel)['members'][0]
-    #     return ret_dic
-    #
 
     @classmethod
     def serch_by_tel(cls, tel):
@@ -43,6 +43,8 @@ class Member(db.Model):
         return ret_dic
 
     __tablename__='members'
+
+
     # 获取积分大于指定值的会员列表
     @classmethod
     def get_member_byScore(cls,score):
