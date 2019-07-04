@@ -36,13 +36,26 @@ def member_actions(condition=None):
             member_list['return_code'] = 200
             member_list['return_msg'] = '获取用户成功'
     elif request.method == 'POST':
-        tel = request.form['tel']
-        mem_info = Member.add_member_by_tel(tel)
-        ret_dic = {
-            "return_code": 200, "return_msg": "add member success",
-            "member": mem_info
-        }
-        return jsonify(ret_dic)
+        if len(request.form['tel']) == 11:
+            result = request.form['tel'].isdigit()
+            if result == True:
+                tel = request.form['tel']
+                mem_info = Member.add_member_by_tel(tel)
+                ret_dic = {
+                    "return_code": 200, "return_msg": "add member success",
+                    "member": mem_info
+                }
+                return jsonify(ret_dic)
+            else:
+                ret_dic = {
+                    "return_code": 508, "return_msg": "add member failed, exists",
+                }
+                return jsonify(ret_dic)
+        else:
+            ret_dic = {
+                "return_code": 508, "return_msg": "add member failed, exists",
+            }
+            return jsonify(ret_dic)
 
 
 # 根据手机号码查找会员列表  ---liu
