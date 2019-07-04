@@ -24,19 +24,12 @@ def init_db():
     return jsonify(ret_dic)
 
 
-
-
-# 根据手机号码注册用户
-@app.route('/member', methods=['POST'])
-@app.route('/member/<condition>', methods=['GET', 'PUT','PATCH'])
-def member_actions(condition=None):
+@app.route('/members', methods=['POST'])
+@app.route('/members/<condition>', methods=['GET', 'PATCH'])
+# 根据实付金额更改用户积分
+def surpermark_member(condition=None):
     # 1.处理创建
-    if request.method == 'GET':
-        if condition == None:
-            member_list = Member.get_all_members()
-            member_list['return_code'] = 200
-            member_list['return_msg'] = '获取用户成功'
-    elif request.method == 'POST':
+    if request.method == 'POST':
         tel = request.form['tel']
         mem_info = Member.add_member_by_tel(tel)
         ret_dic = {
@@ -44,7 +37,6 @@ def member_actions(condition=None):
             "member": mem_info
         }
         return jsonify(ret_dic)
-
     if condition == None:
         if request.method == 'PATCH':
             uid = int(condition.split("_")[-1])
@@ -62,6 +54,7 @@ def member_actions(condition=None):
         elif request.method == '请求方法':
             pass
 
+
 # 查找大于给定积分的用户
 @app.route('/filter/score')
 def get_members_byScore():
@@ -71,6 +64,20 @@ def get_members_byScore():
     ret_dict['return_msg'] = "Filter user success"
     print (ret_dict)
     return jsonify(ret_dict)
+
+
+# 根据手机号码注册用户
+@app.route('/member', methods=['POST'])
+def member_actions(condition=None):
+    # 1.处理创建
+    if request.method == 'POST':
+        tel = request.form['tel']
+        mem_info = Member.add_member_by_tel(tel)
+        ret_dic = {
+            "return_code": 200, "return_msg": "add member success",
+            "member": mem_info
+        }
+        return jsonify(ret_dic)
 
 # 根据id删除用户
 @app.route('/member/uid', methods=['DELETD'])
@@ -82,6 +89,21 @@ def delete_member():
         ret_dic['return_msg'] = 'Delete user success'
         print(ret_dic)
         return jsonify(ret_dic)
+
+
+# 根据手机号码查找用户列表
+
+@app.route('/mermber/<condition>' , methods=['GET'])
+def get_members_by_tel(condition=None):
+    if request.method == 'GET':
+        if condition.startswith('tel_'):
+            tel = condition.split('_')[-1]
+            ret_dic = Member.serch_by_tel(tel)
+            ret_dic['return_code'] = 200
+            ret_dic['return_msg'] = 'Get Member by tel success'
+            return jsonify(ret_dic)
+
+
 
 
 if __name__ == '__main__':
