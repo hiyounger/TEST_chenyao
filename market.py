@@ -11,6 +11,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://%s:%s@%s:%s/%s" % (
 db.init_app(app)
 
 
+app = Flask(__name__)
+# 配置数据库连接
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:111111@127.0.0.1:3306/supermarket"
+db.init_app(app)
+
+
 @app.route('/')
 def index():
     return 'Hellow Flask'
@@ -37,7 +44,7 @@ def member_actions(condition=None):
             member_list['return_msg'] = '获取用户成功'
     elif request.method == 'POST':
         if len(request.form['tel']) == 11:
-            result = request.form['tel'].isdigit()
+            result= request.form['tel'].isdigit()
             if result == True:
                 tel = request.form['tel']
                 mem_info = Member.add_member_by_tel(tel)
@@ -104,27 +111,29 @@ def surpermark_member(condition=None):
             return jsonify(ret_dic)
 
 
-# 根据uid修改用户信息
-@app.route('/member/<condition>' , methods=['PUT'])
-def member_uid(condition=None):
-    if condition != None:
-        if request.method == 'PUT':
-            user_info={}
-            uid = int(condition.split("_")[-1])
-            tel=request.form['tel']
-            discount=request.form['discount']
-            score= request.form['score']
-            active=request.form['active']
-            user_info={
-                'tel':tel,
-                'discount':discount,
-                'score':score,
-                'active':active
-            }
-            ret_dic = Member.update_msg_by_uid(uid, user_info)
-            ret_dic['return_code'] = 200
-            ret_dic['return_msg'] = 'update update member by uid success'
-            return jsonify(ret_dic)
+@app.route('/member', methods=['PUT'])
+def update_members_info():
+    mem_tel=request.form['tel']
+    mem_discount=request.form['discount']
+    mem_score=request.form['score']
+    mem_active=request.form['active']
+
+    target_members=Member.query.filter(Member.uid == uid)[0]
+    target_members.tel=mem_tel
+    target_members.discount=mem_discount
+    target_members.score=mem_score
+    target_members.active = mem_active
+    db.session.commit()
+
+    ret_dic = {
+        'return_code': '200',
+        'return_msg': 'Update members success',
+        'tel': mem_tel,
+        'discount': mem_discount,
+        'score':mem_score,
+        'active': mem_active
+    }
+    return jsonify(ret_dic)
 
 
 # 根据UID注销
