@@ -42,7 +42,6 @@ class Member(db.Model):
                 }
         return ret_dic
 
-    __tablename__='members'
 
 
     # 获取积分大于指定值的会员列表
