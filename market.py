@@ -88,6 +88,30 @@ def surpermark_member(condition=None):
             ret_dic['return_msg'] = 'update score success'
             return jsonify(ret_dic)
 
+@app.route('/member', methods=['PUT'])
+def update_members_info():
+    mem_tel=request.form['tel']
+    mem_discount=request.form['discount']
+    mem_score=request.form['score']
+    mem_active=request.form['active']
+
+    target_members=Member.query.filter(Member.uid == uid)[0]
+    target_members.tel=mem_tel
+    target_members.discount=mem_discount
+    target_members.score=mem_score
+    target_members.active = mem_active
+    db.session.commit()
+
+    ret_dic = {
+        'return_code': '200',
+        'return_msg': 'Update members success',
+        'tel': mem_tel,
+        'discount': mem_discount,
+        'score':mem_score,
+        'active': mem_active
+    }
+    return jsonify(ret_dic)
+
 
 
 if __name__ == '__main__':

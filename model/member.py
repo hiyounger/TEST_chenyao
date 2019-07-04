@@ -121,3 +121,16 @@ class Member(db.Model):
             #  "members":member_list
             # }
             # return ret_dic
+
+    @classmethod
+    # 根据uid，修改tel,discount,score,active
+    def update_msg_by_uid(cls, uid, tel, discount, score, active):
+        member_list = []
+        member = Member.query.filter(Member.uid == uid).first()
+        member_info = {"uid": uid, "tel": tel, "discount": discount,
+                       "score": score, "active": active}
+        member_list.append(member_info)
+        ret_dic = {
+            "members": member_list
+        }
+        return ret_dic
