@@ -19,8 +19,17 @@ def init_db():
     return jsonify(ret_dic)
 @app.route('/members',methods=['POST'])
 @app.route('/members/<condition>',methods=['GET','PATCH'])
+# 根据实付金额更改用户积分
 def surpermark_member(condition=None):
     if condition==None:
+        if request.method == 'PATCH':
+            uid = int(condition.split("_")[-1])
+            score = int(request.form['score'])
+            ret_dic = Member.update_member_score(uid,score)
+            ret_dic['return_code'] = 200
+            ret_dic['return_msg'] = 'update score success'
+            return jsonify(ret_dic)
+
         # 写http：//127.0.0.1/members下的程序
         pass
     else:
@@ -28,6 +37,9 @@ def surpermark_member(condition=None):
             pass
         elif request.method=='请求方法':
             pass
+
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=80,debug=True)
