@@ -121,17 +121,17 @@ class Member(db.Model):
             ret_dic = {
                 "count": len(member_list),
                 "members": member_list
-            }
-        return ret_dic
-        # 方法二：从数据库中查找到积分大于给定积分的用户，遍历增添进member_list中
-        # members = Member.query.filter(Member.score >=int(sc))
-        # for mem in members:
-        #     member_list.append(mem)
-        # ret_dic={
-        #  "count":len(member_list),
-        #  "members":member_list
-        # }
-        # return ret_dic
+                }
+            return ret_dic
+            # 方法二：从数据库中查找到积分大于给定积分的用户，遍历增添进member_list中
+            # members = Member.query.filter(Member.score >=int(sc))
+            # for mem in members:
+            #     member_list.append(mem)
+            # ret_dic={
+            #  "count":len(member_list),
+            #  "members":member_list
+            # }
+            # return ret_dic
 
     @classmethod  # 根据手机号查询会员信息
     def search_by_tel(cls, tel):
