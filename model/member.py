@@ -118,8 +118,9 @@ class Member(db.Model):
             # }
             # return ret_dic
 
-    @classmethod
+
     # 根据uid，修改tel,discount,score,active
+    @classmethod
     def update_msg_by_uid(cls, uid, user_info):
         member_list = []
         member = Member.query.filter(Member.uid == user_info['uid']).first()
@@ -131,6 +132,7 @@ class Member(db.Model):
             "members": member_list
         }
         return ret_dic
+
 
     # 根据uid注销
     @classmethod

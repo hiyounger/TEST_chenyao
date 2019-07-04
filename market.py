@@ -91,8 +91,9 @@ def surpermark_member(condition=None):
             return jsonify(ret_dic)
 
 
+# 根据uid修改用户信息
 @app.route('/member/<condition>' , methods=['PUT'])
-def surpermark_member(condition=None):
+def member_uid(condition=None):
     if condition != None:
         if request.method == 'PUT':
             user_info={}
