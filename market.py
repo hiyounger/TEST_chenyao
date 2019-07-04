@@ -1,11 +1,13 @@
 # encoding:utf-8
 from flask import Flask, jsonify, request
 from model.member import db, Member
+import config
 
 app = Flask(__name__)
 # 配置数据库连接
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:root@127.0.0.1:3306/supermarket"
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://%s:%s@%s:%s/%s" % (
+                                config.DB_USERNAME, config.DB_PASSWORD, config.DB_HOST, config.DB_PORT, config.DB_NAME)
 db.init_app(app)
 
 
@@ -53,17 +55,17 @@ def get_members_by_tel(condition=None):
             ret_dic['return_code'] = 200
             ret_dic['return_msg'] = 'Get Member by tel success'
             return jsonify(ret_dic)
-
- # 通过uid查询会员信息(zhangjun)
-@app.route('/member/<condition>' , methods=['GET'])
-def serch_member_by_uid(condition=None):
-    if request.method == 'GET':
-        if condition != None:
-            uid = condition.split('_')[-1]
+        else:
+            uid = int(condition.split('_')[-1])
             ret_dic = Member.serch_member_by_uid(uid)
-            ret_dic['return_code'] = 200
-            ret_dic['return_msg'] = 'Get Member by tel success'
+            if len(ret_dic) == 0:
+                ret_dic['return_code'] = 400
+                ret_dic['return_msg'] = 'Get Member by uid faild'
+            else:
+                ret_dic['return_code'] = 200
+                ret_dic['return_msg'] = 'Get Member by uid success'
             return jsonify(ret_dic)
+
 # 查找大于给定积分的用户--闫振兴
 @app.route('/filter/score')
 def get_members_byScore():
@@ -79,7 +81,7 @@ def get_members_byScore():
 #根据用户金额更改用户积分  杨俊
 @app.route('/member/<condition>' , methods=['PATCH'])
 def surpermark_member(condition=None):
-    if condition == None:
+    if condition != None:
         if request.method == 'PATCH':
             uid = int(condition.split("_")[-1])
             score = int(request.form['score'])
@@ -87,6 +89,7 @@ def surpermark_member(condition=None):
             ret_dic['return_code'] = 200
             ret_dic['return_msg'] = 'update score success'
             return jsonify(ret_dic)
+
 
 @app.route('/member', methods=['PUT'])
 def update_members_info():
@@ -117,13 +120,14 @@ def update_members_info():
 @app.route('/member/<condition>', methods=['DELETE'])
 def delete_member(condition=None):
     if request.method == 'DELETE':
-        uid = condition.split("_")[-1]
-        mem= Member.query.filter(Member.uid==uid)[0]
-        db.session.delete(mem)
-        db.session.commit()
+        uid = int(condition.split("_")[-1])
         ret_dic = Member.delete_member(uid)
-        ret_dic['return_code'] = 200
-        ret_dic['return_msg'] = 'Delete user success'
+        if len(ret_dic) == 0:
+            ret_dic['return_code'] = 400
+            ret_dic['return_msg'] = 'Delete user failed'
+        else:
+            ret_dic['return_code'] = 200
+            ret_dic['return_msg'] = 'Delete user success'
         print(ret_dic)
         return jsonify(ret_dic)
 
