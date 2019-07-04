@@ -17,6 +17,17 @@ def init_db():
         'return_msg':'Init db success'
     }
     return jsonify(ret_dic)
+@app.route('/member', methods=['POST'])
+def member_actions(condition=None):
+    # 1.处理创建
+    if request.method == 'POST':
+        tel = request.form['tel']
+        mem_info = Member.add_member_by_tel(tel)
+        ret_dic = {
+                "return_code": 200, "return_msg": "add member success",
+                "member": mem_info
+                   }
+        return jsonify(ret_dic)
 
 @app.route('/member/uid',methods=['DELETD'])
 def delete_member():
@@ -27,8 +38,6 @@ def delete_member():
         ret_dic['return_msg'] = 'Delete user success'
         print(ret_dic)
         return jsonify(ret_dic)
-
-
 
 
 if __name__ == '__main__':
