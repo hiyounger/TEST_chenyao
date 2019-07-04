@@ -1,13 +1,15 @@
-#encoding:utf-8
+# encoding:utf-8
 from flask_sqlalchemy import SQLAlchemy
 
-db=SQLAlchemy()
+db = SQLAlchemy()
+
+
 class Member(db.Model):
-    uid=db.Column(db.Integer,primary_key=True,autoincrement=True)
-    tel=db.Column(db.String(11),unique=True,nullable=False)
-    discount = db.Column(db.FLOAT,nullable=False,default=1)
-    score = db.Column(db.Integer,nullable=False,default=0)
-    active = db.Column(db.Integer,nullable=False,default=1)
+    uid = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    tel = db.Column(db.String(11), unique=True, nullable=False)
+    discount = db.Column(db.FLOAT, nullable=False, default=1)
+    score = db.Column(db.Integer, nullable=False, default=0)
+    active = db.Column(db.Integer, nullable=False, default=1)
 
     __tablename__ = 'members'
 
@@ -20,6 +22,7 @@ class Member(db.Model):
         db.session.commit()
         ret_dic = cls.serch_by_tel(tel)['members'][0]
         return ret_dic
+
     @classmethod
     def add_memebr(cls, tel):
         member = Member()
@@ -29,20 +32,19 @@ class Member(db.Model):
         ret_dic = cls.serch_by_tel(tel)['members'][0]
         return ret_dic
 
-
     @classmethod
     def serch_by_tel(cls, tel):
         member_list = []
         if len(tel) == 11:
             member = Member.query.filter(Member.tel.endswith(tel))
             member_info = {'uid': member.uid, 'tel': member.tel, 'discount': member.disc, 'score': member.score,
-                       'active': member.active}
+                           'active': member.active}
             member_list.append(member_info)
         else:
             db_query = Member.query.filter(Member.tel.endwith(tel))
             for member in db_query:
                 member_info = {'uid': member.uid, 'tel': member.tel, 'discount': member.disc, 'score': member.score,
-                           'active': member.active}
+                               'active': member.active}
                 member_list.append(member_info)
                 ret_dic = {
                     'new_member': member_info,
@@ -51,38 +53,40 @@ class Member(db.Model):
                 }
         return ret_dic
 
-    __tablename__='members'
+    __tablename__ = 'members'
+
     # 获取积分大于指定值的会员列表
     @classmethod
-    def get_member_byScore(cls,score):
-            member_list=[]
-            # 判断传入的le是否为int类型
-            # 若score是字母，特殊字符的时候，返回输入正确的值
-            # 若score是小数，将score加一在判断。
-            try :
-                sc=int(score)
-                if sc<float(score):
-                    sc+=1
-            except :
-                member_list=['请输入正确的数值']
-                ret_dic={
-                    'members':member_list
-                }
-                return ret_dic
-            # 方法一：从数据库中查找所有用户，
-            # 逐个遍历，找到积分大于给定积分的用户，增添进member_list中
-            members=Member.query.all()
-            for mem in members:
-                if mem.score>=sc:
-                    member_info = {"uid": mem.uid,'tel':mem.tel,'discount':mem.discount,'score':mem.score,'active':mem.active}
-                    member_list.append(member_info)
-            if len(member_list)==0:
-                ret_dic= {
+    def get_member_byScore(cls, score):
+        member_list = []
+        # 判断传入的le是否为int类型
+        # 若score是字母，特殊字符的时候，返回输入正确的值
+        # 若score是小数，将score加一在判断。
+        try:
+            sc = int(score)
+            if sc < float(score):
+                sc += 1
+        except:
+            member_list = ['请输入正确的数值']
+            ret_dic = {
+                'members': member_list
+            }
+            return ret_dic
+        # 方法一：从数据库中查找所有用户，
+        # 逐个遍历，找到积分大于给定积分的用户，增添进member_list中
+        members = Member.query.all()
+        for mem in members:
+            if mem.score >= sc:
+                member_info = {"uid": mem.uid, 'tel': mem.tel, 'discount': mem.discount, 'score': mem.score,
+                               'active': mem.active}
+                member_list.append(member_info)
+        if len(member_list) == 0:
+            ret_dic = {
                 "count": 0,
                 "members": member_list
-                }
-            else:
-                ret_dic = {
+            }
+        else:
+            ret_dic = {
                 "count": len(member_list),
                 "members": member_list
                 }
@@ -122,7 +126,7 @@ class Member(db.Model):
     @classmethod
     def delete_member(cls, uid):
         mem = Member.query.all()
-        if mem.uid==uid:
+        if mem.uid == uid:
             db.session.delete(mem)
             db.session.commit()
         ret_dic = {"uid": mem.uid, 'tel': mem.tel, 'discount': mem.discount, 'score': mem.score,
