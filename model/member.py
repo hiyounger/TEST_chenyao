@@ -46,7 +46,19 @@ class Member(db.Model):
                 }
         return ret_dic
 
- # 通过uid查询会员信息(zhangjun)
+    # 根据实付金额更改用户积分杨俊
+    @classmethod
+    def update_member_score(cls, uid, score):
+        member = Member.query.filter(Member.uid == uid).first()
+        score_before = member.score
+        member.score = score_before + score
+        db.session.commit()
+
+        ret_dic = {"uid": member.uid, 'tel': member.tel, 'score_before': score_before, 'score_after': member.score,
+                   'score_change': score}
+        return ret_dic
+
+    # 通过uid查询会员信息(zhangjun)
     @classmethod
     def serch_member_by_uid(cls, uid):
         for i in range(len(Member.members)):

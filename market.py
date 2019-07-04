@@ -44,7 +44,7 @@ def member_actions(condition=None):
 
 
 # 根据手机号码查找会员列表  ---liu
-@app.route('/mermber/<condition>' , methods=['GET'])
+@app.route('/member/<condition>' , methods=['GET'])
 def get_members_by_tel(condition=None):
     if request.method == 'GET':
         if condition.startswith('tel_'):
@@ -55,7 +55,7 @@ def get_members_by_tel(condition=None):
             return jsonify(ret_dic)
 
  # 通过uid查询会员信息(zhangjun)
-@app.route('/mermber/<condition>' , methods=['GET'])
+@app.route('/member/<condition>' , methods=['GET'])
 def serch_member_by_uid(condition=None):
     if request.method == 'GET':
         if condition != None:
@@ -73,6 +73,21 @@ def get_members_byScore():
     ret_dict['return_msg'] = "Filter user success"
     print (ret_dict)
     return jsonify(ret_dict)
+
+
+
+#根据用户金额更改用户积分  杨俊
+@app.route('/member/<condition>' , methods=['PATCH'])
+def surpermark_member(condition=None):
+    if condition == None:
+        if request.method == 'PATCH':
+            uid = int(condition.split("_")[-1])
+            score = int(request.form['score'])
+            ret_dic = Member.update_member_score(uid, score)
+            ret_dic['return_code'] = 200
+            ret_dic['return_msg'] = 'update score success'
+            return jsonify(ret_dic)
+
 
 
 if __name__ == '__main__':
