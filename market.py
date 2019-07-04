@@ -55,6 +55,11 @@ def delete_member():
         return jsonify(ret_dic)
 
 
+# 根据手机号码查找用户列表
+@app.route('/mermber')
+@app.route('/mermber/<condition>' , methods=['GET'])
+def qq():
+    pass
 
 
 if __name__ == '__main__':
