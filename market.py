@@ -24,12 +24,19 @@ def init_db():
     return jsonify(ret_dic)
 
 
-@app.route('/members', methods=['POST'])
-@app.route('/members/<condition>', methods=['GET', 'PATCH'])
-# 根据实付金额更改用户积分
-def surpermark_member(condition=None):
+
+
+# 根据手机号码注册用户
+@app.route('/member', methods=['POST'])
+@app.route('/member/<condition>', methods=['GET', 'PUT','PATCH'])
+def member_actions(condition=None):
     # 1.处理创建
-    if request.method == 'POST':
+    if request.method == 'GET':
+        if condition == None:
+            member_list = Member.get_all_members()
+            member_list['return_code'] = 200
+            member_list['return_msg'] = '获取用户成功'
+    elif request.method == 'POST':
         tel = request.form['tel']
         mem_info = Member.add_member_by_tel(tel)
         ret_dic = {
@@ -37,6 +44,7 @@ def surpermark_member(condition=None):
             "member": mem_info
         }
         return jsonify(ret_dic)
+
     if condition == None:
         if request.method == 'PATCH':
             uid = int(condition.split("_")[-1])
@@ -81,9 +89,12 @@ def member_actions(condition=None):
 
 # 根据id删除用户
 @app.route('/member/uid', methods=['DELETD'])
-def delete_member():
+def delete_member(uid):
     if request.method == 'DELETE':
-        uid = request.form['uid']
+        mem_uid = request.form['uid']
+        mem= Member.query.filter(Member.uid==mem_uid)[0]
+        db.session.delete(mem)
+        db.session.commit()
         ret_dic = Member.delete_member(uid)
         ret_dic['return_code'] = 200
         ret_dic['return_msg'] = 'Delete user success'
@@ -102,7 +113,6 @@ def get_members_by_tel(condition=None):
             ret_dic['return_code'] = 200
             ret_dic['return_msg'] = 'Get Member by tel success'
             return jsonify(ret_dic)
-
 
 
 

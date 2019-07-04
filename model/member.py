@@ -56,6 +56,38 @@ class Member(db.Model):
     __tablename__ = 'members'
 
     # 获取积分大于指定值的会员列表
+
+    # 根据手机号码注册新用户--童一鉴
+    @classmethod
+    def add_member_by_tel(cls, tel):
+        member = Member()
+        member.tel = tel
+        db.session.add(member)
+        db.session.commit()
+        ret_dic = cls.search_by_tel(tel)['members'][0]
+        return ret_dic
+
+    @classmethod
+    def serch_by_tel(cls, tel):
+        member_list = []
+        if len(tel) == 11:
+            member = Member.query.filter(Member.tel.endswith(tel))
+            member_info = {'uid': member.uid, 'tel': member.tel, 'discount': member.disc, 'score': member.score,
+                           'active': member.active}
+            member_list.append(member_info)
+        else:
+            db_query = Member.query.filter(Member.tel.endwith(tel))
+            for member in db_query:
+                member_info = {'uid': member.uid, 'tel': member.tel, 'discount': member.disc, 'score': member.score,
+                               'active': member.active}
+                member_list.append(member_info)
+                ret_dic = {
+                    'new_member': member_info,
+                    'count': len(member_list),
+                    'members': member_list
+                }
+        return ret_dic
+
     @classmethod
     def get_member_byScore(cls, score):
         member_list = []
@@ -89,18 +121,17 @@ class Member(db.Model):
             ret_dic = {
                 "count": len(member_list),
                 "members": member_list
-                }
-            return ret_dic
-            # 方法二：从数据库中查找到积分大于给定积分的用户，遍历增添进member_list中
-            # members = Member.query.filter(Member.score >=int(sc))
-            # for mem in members:
-            #     member_list.append(mem)
-            # ret_dic={
-            #  "count":len(member_list),
-            #  "members":member_list
-            # }
-            # return ret_dic
-
+            }
+        return ret_dic
+        # 方法二：从数据库中查找到积分大于给定积分的用户，遍历增添进member_list中
+        # members = Member.query.filter(Member.score >=int(sc))
+        # for mem in members:
+        #     member_list.append(mem)
+        # ret_dic={
+        #  "count":len(member_list),
+        #  "members":member_list
+        # }
+        # return ret_dic
 
     @classmethod  # 根据手机号查询会员信息
     def search_by_tel(cls, tel):
@@ -125,13 +156,23 @@ class Member(db.Model):
 
     @classmethod
     def delete_member(cls, uid):
-        mem = Member.query.all()
-        if mem.uid == uid:
-            db.session.delete(mem)
-            db.session.commit()
-        ret_dic = {"uid": mem.uid, 'tel': mem.tel, 'discount': mem.discount, 'score': mem.score,
-                   'active': mem.active}
-        return ret_dic
+        for i in range(len(Member.members)):
+            if Member.members[i]['uid'] == uid:
+                Member.members[i]['state'] ='0'
+                Member.members[i]['discount'] = '1'
+                ret_dic = {
+                    'uid': Member.members[i]['uid'],
+                    'tel': Member.members[i]['tel'],
+                    'state': '0',
+                    'discount': Member.members[i]['discount']
+                }
+                return ret_dic
+            else:
+                ret_dic={
+                    'ret_code':400,
+                    'ret_msg':'Delete,fail'
+                }
+            return ret_dic
 
     # 根据实付金额更改用户积分
     @classmethod
