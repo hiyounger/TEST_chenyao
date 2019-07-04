@@ -40,7 +40,6 @@ class Member(db.Model):
                                'active': member.active}
                 member_list.append(member_info)
         ret_dic = {
-            'new_member': member_info,
             'count': len(member_list),
             'members': member_list
         }
