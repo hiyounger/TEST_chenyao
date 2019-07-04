@@ -11,6 +11,15 @@ class Member(db.Model):
 
     __tablename__='members'
 
+    @classmethod
+    def delete_member(cls, uid):
+        mem = Member.query.all()
+        if mem.uid==uid:
+            db.session.delete(mem)
+            db.session.commit()
+        ret_dic = {"uid": mem.uid, 'tel': mem.tel, 'discount': mem.discount, 'score': mem.score,
+                   'active': mem.active}
+        return ret_dic
 
 
 
