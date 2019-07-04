@@ -56,10 +56,17 @@ def delete_member():
 
 
 # 根据手机号码查找用户列表
-@app.route('/mermber')
 @app.route('/mermber/<condition>' , methods=['GET'])
-def qq():
-    pass
+def get_members_by_tel(condition=None):
+    if request.method == 'GET':
+        if condition.startswith('tel_'):
+            tel = condition.split('_')[-1]
+            ret_dic = Member.serch_by_tel(tel)
+            ret_dic['return_code'] = 200
+            ret_dic['return_msg'] = 'Get Member by tel success'
+            return jsonify(ret_dic)
+
+
 
 
 if __name__ == '__main__':

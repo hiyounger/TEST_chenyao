@@ -11,15 +11,15 @@ class Member(db.Model):
 
     __tablename__ = 'members'
 
-    # @classmethod
-    # def add_memebr(cls, tel):
-    #     member = Member()
-    #     member.tel = tel
-    #     db.session.add(member)
-    #     db.session.commit()
-    #     ret_dic = cls.search_by_tel(tel)['members'][0]
-    #     return ret_dic
-    #
+    @classmethod
+    def add_memebr(cls, tel):
+        member = Member()
+        member.tel = tel
+        db.session.add(member)
+        db.session.commit()
+        ret_dic = cls.search_by_tel(tel)['members'][0]
+        return ret_dic
+
 
     @classmethod
     def serch_by_tel(cls, tel):
