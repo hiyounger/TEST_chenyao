@@ -1,15 +1,13 @@
-# encoding:utf-8
+#encoding:utf-8
 from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy()
-
-
+db=SQLAlchemy()
 class Member(db.Model):
-    uid = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    tel = db.Column(db.String(11), unique=True, nullable=False)
-    discount = db.Column(db.FLOAT, nullable=False, default=1)
-    score = db.Column(db.Integer, nullable=False, default=0)
-    active = db.Column(db.Integer, nullable=False, default=1)
+    uid=db.Column(db.Integer,primary_key=True,autoincrement=True)
+    tel=db.Column(db.String(11),unique=True,nullable=False)
+    discount = db.Column(db.FLOAT,nullable=False,default=1)
+    score = db.Column(db.Integer,nullable=False,default=0)
+    active = db.Column(db.Integer,nullable=False,default=1)
 
     __tablename__ = 'members'
 
@@ -22,6 +20,15 @@ class Member(db.Model):
         db.session.commit()
         ret_dic = cls.search_by_tel(tel)['members'][0]
         return ret_dic
+    @classmethod
+    def add_memebr(cls, tel):
+        member = Member()
+        member.tel = tel
+        db.session.add(member)
+        db.session.commit()
+        ret_dic = cls.search_by_tel(tel)['members'][0]
+        return ret_dic
+
 
     @classmethod
     def serch_by_tel(cls, tel):
@@ -44,6 +51,7 @@ class Member(db.Model):
                 }
         return ret_dic
 
+    __tablename__='members'
     # 获取积分大于指定值的会员列表
 
     # 根据手机号码注册新用户--童一鉴
@@ -144,7 +152,6 @@ class Member(db.Model):
         }
         return ret_dic
 
-    # 根据UID注销会员信息
     @classmethod
     def delete_member(cls, uid):
         for i in range(len(Member.members)):

@@ -75,6 +75,20 @@ def get_members_byScore():
 
 
 
+
+# 根据手机号码注册用户
+@app.route('/member', methods=['POST'])
+def member_actions(condition=None):
+    # 1.处理创建
+    if request.method == 'POST':
+        tel = request.form['tel']
+        mem_info = Member.add_member_by_tel(tel)
+        ret_dic = {
+            "return_code": 200, "return_msg": "add member success",
+            "member": mem_info
+        }
+        return jsonify(ret_dic)
+
 # 根据id删除用户
 @app.route('/member/uid', methods=['DELETD'])
 def delete_member(uid):
@@ -88,6 +102,21 @@ def delete_member(uid):
         ret_dic['return_msg'] = 'Delete user success'
         print(ret_dic)
         return jsonify(ret_dic)
+
+
+# 根据手机号码查找用户列表
+
+@app.route('/mermber/<condition>' , methods=['GET'])
+def get_members_by_tel(condition=None):
+    if request.method == 'GET':
+        if condition.startswith('tel_'):
+            tel = condition.split('_')[-1]
+            ret_dic = Member.serch_by_tel(tel)
+            ret_dic['return_code'] = 200
+            ret_dic['return_msg'] = 'Get Member by tel success'
+            return jsonify(ret_dic)
+
+
 
 
 if __name__ == '__main__':
