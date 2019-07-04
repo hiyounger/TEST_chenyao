@@ -120,12 +120,13 @@ class Member(db.Model):
 
     @classmethod
     # 根据uid，修改tel,discount,score,active
-    def update_msg_by_uid(cls, uid, tel, discount, score, active):
+    def update_msg_by_uid(cls, uid, user_info):
         member_list = []
-        member = Member.query.filter(Member.uid == uid).first()
-        member_info = {"uid": uid, "tel": tel, "discount": discount,
-                       "score": score, "active": active}
+        member = Member.query.filter(Member.uid == user_info['uid']).first()
+        member_info = {"uid": int(member.uid), "tel": user_info['tel'], "discount": user_info['discount'],
+                       "score": user_info['score'], "active": user_info['active']}
         member_list.append(member_info)
+        db.session.commit()
         ret_dic = {
             "members": member_list
         }
