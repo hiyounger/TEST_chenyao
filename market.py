@@ -120,19 +120,22 @@ def update_members_info():
 @app.route('/member/<condition>', methods=['DELETE'])
 def delete_member(condition=None):
     if request.method == 'DELETE':
-        uid = int(condition.split("_")[-1])
+        uid = condition.split("_")[-1]
+        result=uid.isdigit()
         ret_dic = Member.delete_member(uid)
-        if len(ret_dic) == 0:
-            ret_dic['return_code'] = 400
-            ret_dic['return_msg'] = 'Delete user failed'
-        else:
+        if result==True:
             ret_dic['return_code'] = 200
             ret_dic['return_msg'] = 'Delete user success'
-        print(ret_dic)
-        return jsonify(ret_dic)
+            return jsonify(ret_dic)
+
+        else:
+            ret_dic['return_code'] = 400
+            ret_dic['return_msg'] = 'Delete user faild'
+            return jsonify(ret_dic)
+
 
 
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, debug=True)
+    app.run( port=5000, debug=True)

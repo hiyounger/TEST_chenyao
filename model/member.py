@@ -23,7 +23,6 @@ class Member(db.Model):
         ret_dic = cls.search_by_tel(tel)['members'][0]
         return ret_dic
 
-
     # 根据手机号查找会员列表  ---liu
     @classmethod
     def search_by_tel(cls, tel):
@@ -69,63 +68,64 @@ class Member(db.Model):
                     'tel': member.tel,
                     'discount': member.discount,
                     'score': member.score,
-                    'active':member.active,
+                    'active': member.active,
                 }
                 return ret_dic
         return {}
 
- # 获取积分大于指定值的会员列表--闫振兴
+    # 获取积分大于指定值的会员列表--闫振兴
     @classmethod
-    def get_member_byScore(cls,score):
-            member_list=[]
-            # 判断传入的le是否为int类型
-            # 若score是字母，特殊字符的时候，返回输入正确的值
-            # 若score是小数，将score加一在判断。
-            try :
-                sc=int(score)
-                if sc<float(score):
-                    sc+=1
-            except :
-                member_list=['请输入正确的数值']
-                ret_dic={
-                    'members':member_list
-                }
-                return ret_dic
-            # 方法一：从数据库中查找所有用户，
-            # 逐个遍历，找到积分大于给定积分的用户，增添进member_list中
-            members=Member.query.all()
-            for mem in members:
-                if mem.score>=sc:
-                    member_info = {"uid": mem.uid,'tel':mem.tel,'discount':mem.discount,'score':mem.score,'active':mem.active}
-                    member_list.append(member_info)
-            if len(member_list)==0:
-                ret_dic= {
+    def get_member_byScore(cls, score):
+        member_list = []
+        # 判断传入的le是否为int类型
+        # 若score是字母，特殊字符的时候，返回输入正确的值
+        # 若score是小数，将score加一在判断。
+        try:
+            sc = int(score)
+            if sc < float(score):
+                sc += 1
+        except:
+            member_list = ['请输入正确的数值']
+            ret_dic = {
+                'members': member_list
+            }
+            return ret_dic
+        # 方法一：从数据库中查找所有用户，
+        # 逐个遍历，找到积分大于给定积分的用户，增添进member_list中
+        members = Member.query.all()
+        for mem in members:
+            if mem.score >= sc:
+                member_info = {"uid": mem.uid, 'tel': mem.tel, 'discount': mem.discount, 'score': mem.score,
+                               'active': mem.active}
+                member_list.append(member_info)
+        if len(member_list) == 0:
+            ret_dic = {
                 "count": 0,
                 "members": member_list
-                }
-            else:
-                ret_dic = {
+            }
+        else:
+            ret_dic = {
                 "count": len(member_list),
                 "members": member_list
-                }
-            return ret_dic
-            # 方法二：从数据库中查找到积分大于给定积分的用户，遍历增添进member_list中
-            # members = Member.query.filter(Member.score >=int(sc))
-            # for mem in members:
-            #     member_list.append(mem)
-            # ret_dic={
-            #  "count":len(member_list),
-            #  "members":member_list
-            # }
-            # return ret_dic
+            }
+        return ret_dic
+        # 方法二：从数据库中查找到积分大于给定积分的用户，遍历增添进member_list中
+        # members = Member.query.filter(Member.score >=int(sc))
+        # for mem in members:
+        #     member_list.append(mem)
+        # ret_dic={
+        #  "count":len(member_list),
+        #  "members":member_list
+        # }
+        # return ret_dic
 
     @classmethod
     # 根据uid，修改tel,discount,score,active
     def update_msg_by_uid(cls, uid, tel, discount, score, active):
         member_list = []
         member = Member.query.filter(Member.uid == uid).first()
-        member_info = {"uid": uid, "tel": tel, "discount": discount,
-                       "score": score, "active": active}
+        member_info = {"uid": member.uid, "tel": member.tel, "discount": member.discount,
+                       "score": member.score, "active": member.active}
         member_list.append(member_info)
         ret_dic = {
             "members": member_list
