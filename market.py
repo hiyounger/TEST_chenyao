@@ -11,12 +11,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://%s:%s@%s:%s/%s" % (
 db.init_app(app)
 
 
-app = Flask(__name__)
-# 配置数据库连接
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:111111@127.0.0.1:3306/supermarket"
-db.init_app(app)
-
 
 @app.route('/')
 def index():
