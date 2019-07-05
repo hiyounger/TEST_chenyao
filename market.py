@@ -65,11 +65,16 @@ def get_members_by_tel(condition=None):
         if condition.startswith('tel_'):
             tel = condition.split('_')[-1]
             ret_dic = Member.search_by_tel(tel)
-            result_tel = tel.isdigit()
-            if result_tel == True:
-                ret_dic['return_code'] = 200
-                ret_dic['return_msg'] = 'Get Member by tel success'
-                return jsonify(ret_dic)
+            if len(tel)==11 or len(tel)==4:
+                result_tel = tel.isdigit()
+                if result_tel == True:
+                    ret_dic['return_code'] = 200
+                    ret_dic['return_msg'] = 'Get Member by tel success'
+                    return jsonify(ret_dic)
+                else:
+                    ret_dic['return_code'] = 400
+                    ret_dic['return_msg'] = 'Get Member by tel failed'
+                    return jsonify(ret_dic)
             else:
                 ret_dic['return_code'] = 400
                 ret_dic['return_msg'] = 'Get Member by tel failed'
