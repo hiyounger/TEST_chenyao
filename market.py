@@ -11,7 +11,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://%s:%s@%s:%s/%s" % (
 db.init_app(app)
 
 
-
 @app.route('/')
 def index():
     return 'Hellow Flask'
