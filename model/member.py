@@ -23,6 +23,7 @@ class Member(db.Model):
         ret_dic = cls.search_by_tel(tel)['members'][0]
         return ret_dic
 
+
     # 根据手机号查找会员列表  ---liu
     @classmethod
     def search_by_tel(cls, tel):
@@ -68,7 +69,7 @@ class Member(db.Model):
                     'tel': member.tel,
                     'discount': member.discount,
                     'score': member.score,
-                    'active': member.active,
+                    'active':member.active,
                 }
                 return ret_dic
         return {}
@@ -119,14 +120,16 @@ class Member(db.Model):
         # }
         # return ret_dic
 
+    #根据uid，修改tel,discount,score,active
     @classmethod
-    # 根据uid，修改tel,discount,score,active
-    def update_msg_by_uid(cls, uid, tel, discount, score, active):
+    def update_msg_by_uid(cls, uid,user_info):
         member_list = []
-        member = Member.query.filter(Member.uid == uid).first()
-        member_info = {"uid": member.uid, "tel": member.tel, "discount": member.discount,
-                       "score": member.score, "active": member.active}
+
+        member = Member.query.filter(Member.uid == user_info['uid']).first()
+        member_info = {"uid": int(member.uid), "tel": user_info['tel'], "discount": user_info['discount'],
+                       "score": user_info['score'], "active": user_info['active']}
         member_list.append(member_info)
+        db.session.commit()
         ret_dic = {
             "members": member_list
         }
