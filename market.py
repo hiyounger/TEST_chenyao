@@ -145,7 +145,10 @@ def delete_member(condition=None):
             ret_dic['return_msg'] = 'Delete user faild'
             return jsonify(ret_dic)
 
-
+@app.route('/member')
+def get_all_mermbers_list():
+    ret_dict=Member.get_all_members()
+    return jsonify(ret_dict)
 
 
 
