@@ -150,3 +150,17 @@ class Member(db.Model):
                 }
                 return ret_dic
         return {}
+
+    #查询所有用户：
+    @classmethod
+    def get_all_members(cls):
+        member_list=[]
+        member=Member.query.all()
+        for mem in member:
+            member_info = {"uid": mem.uid, 'tel': mem.tel, 'discount': mem.discount, 'score': mem.score,
+                               'active': mem.active}
+            member_list.append(member_info)
+        ret_dic={
+            'members':member_list
+        }
+        return ret_dic
