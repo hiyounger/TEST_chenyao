@@ -128,21 +128,37 @@ def member_uid(condition=None):
 
 
 # 根据UID注销
+
 @app.route('/member/<condition>', methods=['DELETE'])
 def delete_member(condition=None):
     if request.method == 'DELETE':
-        uid = condition.split("_")[-1]
-        result=uid.isdigit()
-        ret_dic = Member.delete_member(uid)
-        if result==True:
-            ret_dic['return_code'] = 200
-            ret_dic['return_msg'] = 'Delete user success'
+        try:
+            ret_uid = int(condition.split("_")[-1])
+        except:
+            ret_dic = {'return_code': 400,
+                       'return_msg': '请输入数字'}
             return jsonify(ret_dic)
-
-        else:
-            ret_dic['return_code'] = 400
-            ret_dic['return_msg'] = 'Delete user faild'
-            return jsonify(ret_dic)
+        ret_mem = Member.query.all()
+        for mem in ret_mem:
+            if mem.uid == ret_uid:
+                if mem.active == 0:
+                    ret_dic = {'return_code': 400,
+                               'return_msg': '该用户已注销'}
+                    return jsonify(ret_dic)
+                else:
+                    mem.active = 0
+                    mem.discount = 1
+                    db.session.commit()
+                    ret_dic = {'return_code': 200,
+                           'return_msg': 'Delete user success',
+                           'member': {'uid': mem.uid, 'tel': mem.tel, 'discount': mem.discount,
+                                      'score': mem.score, 'active': mem.active
+                                      }}
+                    return jsonify(ret_dic)
+            else:
+                ret_dic = {'return_code': 400,
+                           'return_msg': '注销失败，UID不存在'}
+                return jsonify(ret_dic)
 
 @app.route('/member')
 def get_all_mermbers_list():
