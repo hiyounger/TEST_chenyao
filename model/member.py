@@ -137,6 +137,7 @@ class Member(db.Model):
         return ret_dic
 
 
+
     # 根据uid注销
     @classmethod
     def delete_member(cls, uid):

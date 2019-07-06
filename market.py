@@ -144,6 +144,7 @@ def member_uid(condition=None):
             return jsonify(ret_dic)
 
 
+
 # 根据UID注销
 @app.route('/member/<condition>', methods=['DELETE'])
 def delete_member(condition=None):
