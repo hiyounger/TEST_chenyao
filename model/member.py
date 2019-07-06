@@ -122,6 +122,7 @@ class Member(db.Model):
         # }
         # return ret_dic
 
+
     #根据uid，修改用户信息    ---陈耀
     @classmethod
     def update_msg_by_uid(cls, uid,user_info):
