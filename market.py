@@ -87,15 +87,29 @@ def get_members_by_tel(condition=None):
                 ret_dic['return_msg'] = 'Get Member by tel failed'
                 return jsonify(ret_dic)
         else:
-            uid = int(condition.split('_')[-1])
-            ret_dic = Member.serch_member_by_uid(uid)
-            if len(ret_dic) == 0:
-                ret_dic['return_code'] = 400
-                ret_dic['return_msg'] = 'Get Member by uid faild'
-            else:
-                ret_dic['return_code'] = 200
-                ret_dic['return_msg'] = 'Get Member by uid success'
-            return jsonify(ret_dic)
+            try:
+                uid = int(condition.split('_')[-1])
+            except:
+                ret_dic = {
+                    'ret_code': '请输入正确的id',
+                    'ret_msg': 'get member by uid failed'
+                }
+                return jsonify(ret_dic)
+            ret_mem = Member.query.all()
+            for mem in ret_mem:
+                if mem.uid == uid:
+                    ret_dic = {'return_code': 200,
+                               'return_msg': 'get member by uid success',
+                               'member': {'uid': mem.uid, 'tel': mem.tel, 'discount': mem.discount,
+                                          'score': mem.score, 'active': mem.active
+                                          }
+                               }
+                    return jsonify(ret_dic)
+                else:
+                    ret_dic = {'return_code': 400,
+                               'return_msg': 'get member by uid failed',
+                               }
+                    return jsonify(ret_dic)
 
 # 查找大于给定积分的用户--闫振兴
 @app.route('/filter/score')
