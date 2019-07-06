@@ -126,7 +126,7 @@ class Member(db.Model):
     @classmethod
     def update_msg_by_uid(cls, uid,user_info):
         member_list = []
-        member = Member.query.filter(Member.uid == user_info['uid']).first()
+        member = Member.query.filter(Member.uid == uid).first()
         member_info = {"uid": int(member.uid), "tel": user_info['tel'], "discount": user_info['discount'],
                        "score": user_info['score'], "active": user_info['active']}
         member_list.append(member_info)
