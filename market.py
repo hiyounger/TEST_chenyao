@@ -127,7 +127,6 @@ def surpermark_member(condition=None):
 def member_uid(condition=None):
     if condition != None:
         if request.method == 'PUT':
-            user_info={}
             uid = int(condition.split("_")[-1])
             tel=request.form['tel']
             discount=request.form['discount']
