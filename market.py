@@ -88,28 +88,33 @@ def get_members_by_tel(condition=None):
                 return jsonify(ret_dic)
         else:
             try:
-                uid = int(condition.split('_')[-1])
+                uid = int(condition.split("_")[-1])
             except:
                 ret_dic = {
-                    'ret_code': '请输入正确的id',
-                    'ret_msg': 'get member by uid failed'
+                    "return_code": "400",
+                    "return_msg": "uid输入错误"
                 }
                 return jsonify(ret_dic)
-            ret_mem = Member.query.all()
+            ret_mem = Member.query.filter(Member.uid == uid)
+
+            member_list = []
             for mem in ret_mem:
-                if mem.uid == uid:
-                    ret_dic = {'return_code': 200,
-                               'return_msg': 'get member by uid success',
-                               'member': {'uid': mem.uid, 'tel': mem.tel, 'discount': mem.discount,
-                                          'score': mem.score, 'active': mem.active
-                                          }
-                               }
-                    return jsonify(ret_dic)
-                else:
-                    ret_dic = {'return_code': 400,
-                               'return_msg': 'get member by uid failed',
-                               }
-                    return jsonify(ret_dic)
+                member_info = {"uid": mem.uid, "tel": mem.tel, "discount": mem.discount, "score": mem.score,
+                               "active": mem.active}
+                member_list.append(member_info)
+            if len(member_list) == 0:
+                ret_dic = {
+                    "return_code": "400",
+                    "return_msg": "uid不存在"
+                }
+                return jsonify(ret_dic)
+            else:
+                ret_dic = {
+                    "return_code": "200",
+                    "return_msg": "get member by uid success",
+                    "members": member_list
+                }
+                return jsonify(ret_dic)
 
 # 查找大于给定积分的用户--闫振兴
 @app.route('/filter/score')
