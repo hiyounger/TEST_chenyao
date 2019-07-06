@@ -7,7 +7,7 @@ app = Flask(__name__)
 # 配置数据库连接
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://%s:%s@%s:%s/%s" % (
-                                config.DB_USERNAME, config.DB_PASSWORD, config.DB_HOST, config.DB_PORT, config.DB_NAME)
+    config.DB_USERNAME, config.DB_PASSWORD, config.DB_HOST, config.DB_PORT, config.DB_NAME)
 db.init_app(app)
 
 
@@ -31,13 +31,13 @@ def init_db():
 def member_actions():
     tel = request.form['tel']
     member_tel = Member.query.filter(Member.tel == tel).first()
-    if member_tel !=None:# (如果输入的手机号在数据库中）
+    if member_tel != None:  # (如果输入的手机号在数据库中）
         ret_dic = {
             "return_code": 508,
             "return_msg": "add member failed, exists",
         }
         return jsonify(ret_dic)
-    if len(tel) == 11 : # 判断tel长度是否等于11
+    if len(tel) == 11:  # 判断tel长度是否等于11
         result = request.form['tel'].isdigit()  # result是tel转换成数字，判断是否为真
         if result == True:  # 如果为真, 即长度为11位，类型为整数
             tel = request.form['tel']
@@ -60,13 +60,13 @@ def member_actions():
 
 
 # 根据手机号码查找会员列表  ---liu
-@app.route('/member/<condition>' , methods=['GET'])
+@app.route('/member/<condition>', methods=['GET'])
 def get_members_by_tel(condition=None):
     if request.method == 'GET':
         if condition.startswith('tel_'):
             tel = condition.split('_')[-1]
             ret_dic = Member.search_by_tel(tel)
-            if len(tel)==11 or len(tel)==4:
+            if len(tel) == 11 or len(tel) == 4:
                 result_tel = tel.isdigit()
                 if result_tel == True:
                     ret_dic['return_code'] = 200
@@ -110,6 +110,7 @@ def get_members_by_tel(condition=None):
                 }
                 return jsonify(ret_dic)
 
+
 # 查找大于给定积分的用户--闫振兴
 @app.route('/filter/score')
 def get_members_byScore():
@@ -121,9 +122,8 @@ def get_members_byScore():
     return jsonify(ret_dict)
 
 
-
-#根据用户金额更改用户积分  杨俊
-@app.route('/member/<condition>' , methods=['PATCH'])
+# 根据用户金额更改用户积分  杨俊
+@app.route('/member/<condition>', methods=['PATCH'])
 def surpermark_member(condition=None):
     if condition != None:
         if request.method == 'PATCH':
@@ -135,15 +135,15 @@ def surpermark_member(condition=None):
             return jsonify(ret_dic)
 
 
-#根据uid修改用户信息    陈耀
-@app.route('/member/<condition>' , methods=['PUT'])
+# 根据uid修改用户信息    陈耀
+@app.route('/member/<condition>', methods=['PUT'])
 def member_uid(condition=None):
     if condition != None:
-       if request.method == 'PUT':
+        if request.method == 'PUT':
             uid = int(condition.split("_")[-1])
             member = Member.query.filter(Member.uid == uid).first()
-            if member==None:
-                ret_dic1={
+            if member == None:
+                ret_dic1 = {
                     "return_code": "400",
                     "return_msg": "该用户不存在"
                 }
@@ -201,11 +201,11 @@ def delete_member(condition=None):
                    "ret_msg": "注销会员失败, uid 不存在"}
         return jsonify(ret_dic)
 
+
 @app.route('/member')
 def get_all_mermbers_list():
-    ret_dict=Member.get_all_members()
+    ret_dict = Member.get_all_members()
     return jsonify(ret_dict)
-
 
 
 if __name__ == '__main__':
