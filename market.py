@@ -11,7 +11,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://%s:%s@%s:%s/%s" % (
 db.init_app(app)
 
 
-
 @app.route('/')
 def index():
     return 'Hellow Flask'
@@ -65,19 +64,44 @@ def get_members_by_tel(condition=None):
         if condition.startswith('tel_'):
             tel = condition.split('_')[-1]
             ret_dic = Member.search_by_tel(tel)
-            ret_dic['return_code'] = 200
-            ret_dic['return_msg'] = 'Get Member by tel success'
-            return jsonify(ret_dic)
-        else:
-            uid = int(condition.split('_')[-1])
-            ret_dic = Member.serch_member_by_uid(uid)
-            if len(ret_dic) == 0:
-                ret_dic['return_code'] = 400
-                ret_dic['return_msg'] = 'Get Member by uid faild'
+            if len(tel)==11 or len(tel)==4:
+                result_tel = tel.isdigit()
+                if result_tel == True:
+                    ret_dic['return_code'] = 200
+                    ret_dic['return_msg'] = 'Get Member by tel success'
+                    return jsonify(ret_dic)
+                else:
+                    ret_dic['return_code'] = 400
+                    ret_dic['return_msg'] = 'Get Member by tel failed'
+                    return jsonify(ret_dic)
             else:
-                ret_dic['return_code'] = 200
-                ret_dic['return_msg'] = 'Get Member by uid success'
-            return jsonify(ret_dic)
+                ret_dic['return_code'] = 400
+                ret_dic['return_msg'] = 'Get Member by tel failed'
+                return jsonify(ret_dic)
+        else:
+            try:
+                uid = int(condition.split('_')[-1])
+            except:
+                ret_dic = {
+                    'ret_code': '请输入正确的id',
+                    'ret_msg': 'get member by uid failed'
+                }
+                return jsonify(ret_dic)
+            ret_mem = Member.query.all()
+            for mem in ret_mem:
+                if mem.uid == uid:
+                    ret_dic = {'return_code': 200,
+                               'return_msg': 'get member by uid success',
+                               'member': {'uid': mem.uid, 'tel': mem.tel, 'discount': mem.discount,
+                                          'score': mem.score, 'active': mem.active
+                                          }
+                               }
+                    return jsonify(ret_dic)
+                else:
+                    ret_dic = {'return_code': 400,
+                               'return_msg': 'get member by uid failed',
+                               }
+                    return jsonify(ret_dic)
 
 # 查找大于给定积分的用户--闫振兴
 @app.route('/filter/score')
@@ -99,17 +123,28 @@ def surpermark_member(condition=None):
             uid = int(condition.split("_")[-1])
             score = int(request.form['score'])
             ret_dic = Member.update_member_score(uid, score)
-            ret_dic['return_code'] = 200
-            ret_dic['return_msg'] = 'update score success'
-            return jsonify(ret_dic)
 
+            if len(ret_dic) == 0:
+                ret_dic['return_code'] = 500
+                ret_dic['return_msg'] = '用户未注册'
+                return jsonify(ret_dic)
+
+            elif score>0 or score ==0:
+                ret_dic['return_code'] = 200
+                ret_dic['return_msg'] = 'update score success'
+                return jsonify(ret_dic)
+            elif score<0:
+                ret_dic = {
+                    'return_code': 500,
+                    'return_msg': '积分不能为负数，请输入正确的积分值'
+                }
+                return jsonify(ret_dic)
 
 #根据uid修改用户信息  陈耀
 @app.route('/member/<condition>' , methods=['PUT'])
 def member_uid(condition=None):
     if condition != None:
         if request.method == 'PUT':
-            user_info={}
             uid = int(condition.split("_")[-1])
             tel=request.form['tel']
             discount=request.form['discount']
@@ -127,22 +162,39 @@ def member_uid(condition=None):
             return jsonify(ret_dic)
 
 
+
 # 根据UID注销
+
 @app.route('/member/<condition>', methods=['DELETE'])
 def delete_member(condition=None):
     if request.method == 'DELETE':
-        uid = condition.split("_")[-1]
-        result=uid.isdigit()
-        ret_dic = Member.delete_member(uid)
-        if result==True:
-            ret_dic['return_code'] = 200
-            ret_dic['return_msg'] = 'Delete user success'
+        try:
+            ret_uid = int(condition.split("_")[-1])
+        except:
+            ret_dic = {'return_code': 400,
+                       'return_msg': '请输入数字'}
             return jsonify(ret_dic)
-
-        else:
-            ret_dic['return_code'] = 400
-            ret_dic['return_msg'] = 'Delete user faild'
-            return jsonify(ret_dic)
+        ret_mem = Member.query.all()
+        for mem in ret_mem:
+            if mem.uid == ret_uid:
+                if mem.active == 0:
+                    ret_dic = {'return_code': 400,
+                               'return_msg': '该用户已注销'}
+                    return jsonify(ret_dic)
+                else:
+                    mem.active = 0
+                    mem.discount = 1
+                    db.session.commit()
+                    ret_dic = {'return_code': 200,
+                           'return_msg': 'Delete user success',
+                           'member': {'uid': mem.uid, 'tel': mem.tel, 'discount': mem.discount,
+                                      'score': mem.score, 'active': mem.active
+                                      }}
+                    return jsonify(ret_dic)
+            else:
+                ret_dic = {'return_code': 400,
+                           'return_msg': '注销失败，UID不存在'}
+                return jsonify(ret_dic)
 
 @app.route('/member')
 def get_all_mermbers_list():
@@ -150,6 +202,5 @@ def get_all_mermbers_list():
     return jsonify(ret_dict)
 
 
-
 if __name__ == '__main__':
-    app.run( port=5000, debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True)
