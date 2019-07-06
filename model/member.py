@@ -29,22 +29,30 @@ class Member(db.Model):
     def search_by_tel(cls, tel):
         member_list = []
         type = tel.isdigit()
-        if len(tel) == 11 and type == True:
-            member = Member.query.filter(Member.tel.endswith(tel)).first()
+        member = Member.query.filter(Member.tel.endswith(tel)).first()
+        if len(tel) == 11 and type == True and member != None:
             member_info = {'uid': member.uid, 'tel': member.tel, 'discount': member.discount, 'score': member.score,
                            'active': member.active}
             member_list.append(member_info)
-        elif len(tel) == 4 and type == True:
+            ret_dic = {
+                'count': len(member_list),
+                'members': member_list
+            }
+            return ret_dic
+        elif len(tel) == 4 and type == True and member != None:
             db_query = Member.query.filter(Member.tel.endswith(tel))
             for member in db_query:
                 member_info = {'uid': member.uid, 'tel': member.tel, 'discount': member.discount, 'score': member.score,
                                'active': member.active}
                 member_list.append(member_info)
-        ret_dic = {
-            'count': len(member_list),
-            'members': member_list
-        }
-        return ret_dic
+                ret_dic = {
+                    'count': len(member_list),
+                    'members': member_list
+                }
+                return ret_dic
+        else:
+            ret_dic={}
+            return ret_dic
 
 
 

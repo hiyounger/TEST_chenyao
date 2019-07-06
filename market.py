@@ -69,10 +69,10 @@ def member_actions():
 @app.route('/member/<condition>' , methods=['GET'])
 def get_members_by_tel(condition=None):
     if request.method == 'GET':
+        tel = condition.split('_')[-1]
+        ret_dic = Member.search_by_tel(tel)
         if condition.startswith('tel_'):
-            tel = condition.split('_')[-1]
-            ret_dic = Member.search_by_tel(tel)
-            if len(tel)==11 or len(tel)==4:
+            if len(tel)==11 or len(tel)==4 and ret_dic!={}:
                 result_tel = tel.isdigit()
                 if result_tel == True:
                     ret_dic['return_code'] = 200
