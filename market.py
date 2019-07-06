@@ -141,25 +141,36 @@ def surpermark_member(condition=None):
             return jsonify(ret_dic)
 
 
-#根据uid修改用户信息  陈耀
+#根据uid修改用户信息    陈耀
 @app.route('/member/<condition>' , methods=['PUT'])
 def member_uid(condition=None):
     if condition != None:
-        if request.method == 'PUT':
+       if request.method == 'PUT':
             uid = int(condition.split("_")[-1])
-            tel=request.form['tel']
-            discount=request.form['discount']
-            score= request.form['score']
-            active=request.form['active']
-            user_info={
-                'tel':tel,
-                'discount':discount,
-                'score':score,
-                'active':active
-            }
-            ret_dic = Member.update_msg_by_uid(uid, user_info)
-            ret_dic['return_code'] = 200
-            ret_dic['return_msg'] = 'update update member by uid success'
+            member = Member.query.filter(Member.uid == uid).first()
+            if member==None:
+                ret_dic1={
+                    "return_code": "400",
+                    "return_msg": "该用户不存在"
+                }
+                return jsonify(ret_dic1)
+            try:
+                new_tel = request.form["tel"]
+            except:
+                new_tel = member.tel
+            try:
+                new_discount = request.form["discount"]
+            except:
+                new_discount = member.discount
+            try:
+                new_score = request.form["score"]
+            except:
+                new_score = member.score
+            try:
+                new_active = request.form["active"]
+            except:
+                new_active = str(member.active)
+            ret_dic = Member.update_member_by_uid(uid, member, new_tel, new_discount, new_score, new_active)
             return jsonify(ret_dic)
 
 
