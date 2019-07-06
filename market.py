@@ -29,40 +29,34 @@ def init_db():
 # 根据手机号添加会员  ---童一鉴
 @app.route('/member', methods=['POST'])
 def member_actions():
-    if request.method == 'POST':
-        if len(request.form['tel']) == 11: # 判断tel长度是否等于11
-            ret_dic = request.form['tel']
-            # ret_dic_act = request.form['active']
-            result = request.form['tel'].isdigit() # result是tel转换成数字，判断是否为真
-            if result == True :
-                if request.form['tel'] in ret_dic : # and ret_dic_act == 1 :
-                    ret_dic = {
-                        "return_code": 508, "return_msg": "add member failed, exists",
-                    }
-                    return jsonify(ret_dic)
-                elif request.method == 'POST':
-                    tel = request.form['tel']
-                    mem_info = Member.add_member_by_tel(tel)
-                    ret_dic = {
-                        "return_code": 200, "return_msg": "add member success",
-                        "member": mem_info
-                    }
-                    return jsonify(ret_dic)
-                else:
-                    ret_dic = {
-                        "return_code": 508, "return_msg": "add member failed, exists",
-                    }
-                    return jsonify(ret_dic)
-            else:
-                ret_dic = {
-                    "return_code": 508, "return_msg": "add member failed, exists",
-                }
-                return jsonify(ret_dic)
+    tel = request.form['tel']
+    member_tel = Member.query.filter(Member.tel == tel).first()
+    if member_tel !=None:# (如果输入的手机号在数据库中）
+        ret_dic = {
+            "return_code": 508,
+            "return_msg": "add member failed, exists",
+        }
+        return jsonify(ret_dic)
+    if len(tel) == 11 : # 判断tel长度是否等于11
+        result = request.form['tel'].isdigit()  # result是tel转换成数字，判断是否为真
+        if result == True:  # 如果为真, 即长度为11位，类型为整数
+            tel = request.form['tel']
+            mem_info = Member.add_member_by_tel(tel)
+            ret_dic = {
+                "return_code": 200, "return_msg": "add member success",
+                "member": mem_info
+            }
+            return jsonify(ret_dic)
         else:
             ret_dic = {
                 "return_code": 508, "return_msg": "add member failed, exists",
             }
             return jsonify(ret_dic)
+    else:
+        ret_dic = {
+            "return_code": 508, "return_msg": "add member failed, exists",
+        }
+        return jsonify(ret_dic)
 
 
 # 根据手机号码查找会员列表  ---liu
