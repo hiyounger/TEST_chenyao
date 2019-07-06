@@ -40,13 +40,7 @@ def member_actions():
                 "member": mem_info
             }
             return jsonify(ret_dic)
-        elif tel in Member.search_by_tel:  # 如果手机号已存在   and ret_dic_act == 1 :
-            ret_dic = {
-                "return_code": 508, "return_msg": "add member failed, exists",
-            }
-            return jsonify(ret_dic)
-        else:  # and ret_dic_act == 1 :
-            # tel = request.form['tel']
+        else:
             ret_dic = {
                 "return_code": 508, "return_msg": "add member failed, exists",
             }
