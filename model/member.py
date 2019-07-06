@@ -28,8 +28,8 @@ class Member(db.Model):
     @classmethod
     def search_by_tel(cls, tel):
         member_list = []
-        type= tel.isdigit()
-        if len(tel) == 11 and type == True :
+        type = tel.isdigit()
+        if len(tel) == 11 and type == True:
             member = Member.query.filter(Member.tel.endswith(tel)).first()
             member_info = {'uid': member.uid, 'tel': member.tel, 'discount': member.discount, 'score': member.score,
                            'active': member.active}
@@ -45,6 +45,9 @@ class Member(db.Model):
             'members': member_list
         }
         return ret_dic
+
+
+
 
 
 
