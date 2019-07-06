@@ -28,12 +28,13 @@ class Member(db.Model):
     @classmethod
     def search_by_tel(cls, tel):
         member_list = []
-        if len(tel) == 11:
+        type= tel.isdigit()
+        if len(tel) == 11 and type == True :
             member = Member.query.filter(Member.tel.endswith(tel)).first()
             member_info = {'uid': member.uid, 'tel': member.tel, 'discount': member.discount, 'score': member.score,
                            'active': member.active}
             member_list.append(member_info)
-        else:
+        elif len(tel) == 4 and type == True:
             db_query = Member.query.filter(Member.tel.endswith(tel))
             for member in db_query:
                 member_info = {'uid': member.uid, 'tel': member.tel, 'discount': member.discount, 'score': member.score,
@@ -44,6 +45,8 @@ class Member(db.Model):
             'members': member_list
         }
         return ret_dic
+
+
 
     # 根据实付金额更改用户积分杨俊
     @classmethod
@@ -119,12 +122,12 @@ class Member(db.Model):
         # }
         # return ret_dic
 
-    #根据uid，修改tel,discount,score,active
+
+    #根据uid，修改用户信息    ---陈耀
     @classmethod
     def update_msg_by_uid(cls, uid,user_info):
         member_list = []
-
-        member = Member.query.filter(Member.uid == user_info['uid']).first()
+        member = Member.query.filter(Member.uid == uid).first()
         member_info = {"uid": int(member.uid), "tel": user_info['tel'], "discount": user_info['discount'],
                        "score": user_info['score'], "active": user_info['active']}
         member_list.append(member_info)
@@ -133,6 +136,8 @@ class Member(db.Model):
             "members": member_list
         }
         return ret_dic
+
+
 
     # 根据uid注销
     @classmethod
