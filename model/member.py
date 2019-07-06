@@ -51,8 +51,12 @@ class Member(db.Model):
                 }
                 return ret_dic
         else:
-            ret_dic={}
+            ret_dic={
+                'return_code':400,
+                'return_msg':'Get Member by tel failed'
+            }
             return ret_dic
+
 
 
 

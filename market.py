@@ -72,7 +72,7 @@ def get_members_by_tel(condition=None):
         tel = condition.split('_')[-1]
         ret_dic = Member.search_by_tel(tel)
         if condition.startswith('tel_'):
-            if len(tel)==11 or len(tel)==4 and ret_dic!={}:
+            if len(tel)==11 or len(tel)==4:
                 result_tel = tel.isdigit()
                 if result_tel == True:
                     ret_dic['return_code'] = 200
