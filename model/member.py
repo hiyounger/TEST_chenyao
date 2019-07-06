@@ -52,7 +52,7 @@ class Member(db.Model):
     @classmethod
     def update_member_score(cls, uid, score):
         member = Member.query.filter(Member.uid == uid).first()
-        if member == None:
+        if member==None:
             ret_dic = {}
             return ret_dic
 
@@ -61,8 +61,9 @@ class Member(db.Model):
         db.session.commit()
 
         ret_dic = {"uid": member.uid, 'tel': member.tel, 'score_before': score_before, 'score_after': member.score,
-                   'score_change': score}
+                       'score_change': score}
         return ret_dic
+
 
     # 通过uid查询会员信息(zhangjun)
     @classmethod

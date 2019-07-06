@@ -148,7 +148,6 @@ def surpermark_member(condition=None):
                 }
                 return jsonify(ret_dic)
 
-
 #根据uid修改用户信息  陈耀
 @app.route('/member/<condition>' , methods=['PUT'])
 def member_uid(condition=None):
