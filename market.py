@@ -28,24 +28,31 @@ def init_db():
 
 # 根据手机号添加会员  ---童一鉴
 @app.route('/member', methods=['POST'])
-def member_actions(condition=None):
-    # 1.处理创建
-    if request.method == 'GET':
-        if condition == None:
-            member_list = Member.get_all_members()
-            member_list['return_code'] = 200
-            member_list['return_msg'] = '获取用户成功'
-    elif request.method == 'POST':
-        if len(request.form['tel']) == 11:
-            result = request.form['tel'].isdigit()
-            if result == True:
-                tel = request.form['tel']
-                mem_info = Member.add_member_by_tel(tel)
-                ret_dic = {
-                    "return_code": 200, "return_msg": "add member success",
-                    "member": mem_info
-                }
-                return jsonify(ret_dic)
+def member_actions():
+    if request.method == 'POST':
+        if len(request.form['tel']) == 11: # 判断tel长度是否等于11
+            ret_dic = request.form['tel']
+            # ret_dic_act = request.form['active']
+            result = request.form['tel'].isdigit() # result是tel转换成数字，判断是否为真
+            if result == True :
+                if request.form['tel'] in ret_dic : # and ret_dic_act == 1 :
+                    ret_dic = {
+                        "return_code": 508, "return_msg": "add member failed, exists",
+                    }
+                    return jsonify(ret_dic)
+                elif request.method == 'POST':
+                    tel = request.form['tel']
+                    mem_info = Member.add_member_by_tel(tel)
+                    ret_dic = {
+                        "return_code": 200, "return_msg": "add member success",
+                        "member": mem_info
+                    }
+                    return jsonify(ret_dic)
+                else:
+                    ret_dic = {
+                        "return_code": 508, "return_msg": "add member failed, exists",
+                    }
+                    return jsonify(ret_dic)
             else:
                 ret_dic = {
                     "return_code": 508, "return_msg": "add member failed, exists",
@@ -82,7 +89,7 @@ def get_members_by_tel(condition=None):
         else:
             uid = int(condition.split('_')[-1])
             ret_dic = Member.serch_member_by_uid(uid)
-            if len(ret_dic) == 0 :
+            if len(ret_dic) == 0:
                 ret_dic['return_code'] = 400
                 ret_dic['return_msg'] = 'Get Member by uid faild'
             else:
@@ -115,7 +122,7 @@ def surpermark_member(condition=None):
             return jsonify(ret_dic)
 
 
-# 根据uid修改用户信息
+#根据uid修改用户信息  陈耀
 @app.route('/member/<condition>' , methods=['PUT'])
 def member_uid(condition=None):
     if condition != None:
@@ -142,19 +149,25 @@ def member_uid(condition=None):
 @app.route('/member/<condition>', methods=['DELETE'])
 def delete_member(condition=None):
     if request.method == 'DELETE':
-        uid = int(condition.split("_")[-1])
+        uid = condition.split("_")[-1]
+        result=uid.isdigit()
         ret_dic = Member.delete_member(uid)
-        if len(ret_dic) == 0:
-            ret_dic['return_code'] = 400
-            ret_dic['return_msg'] = 'Delete user failed'
-        else:
+        if result==True:
             ret_dic['return_code'] = 200
             ret_dic['return_msg'] = 'Delete user success'
-        print(ret_dic)
-        return jsonify(ret_dic)
+            return jsonify(ret_dic)
 
+        else:
+            ret_dic['return_code'] = 400
+            ret_dic['return_msg'] = 'Delete user faild'
+            return jsonify(ret_dic)
+
+@app.route('/member')
+def get_all_mermbers_list():
+    ret_dict=Member.get_all_members()
+    return jsonify(ret_dict)
 
 
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=80, debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True)

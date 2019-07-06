@@ -76,56 +76,57 @@ class Member(db.Model):
                 return ret_dic
         return {}
 
- # 获取积分大于指定值的会员列表--闫振兴
+    # 获取积分大于指定值的会员列表--闫振兴
     @classmethod
-    def get_member_byScore(cls,score):
-            member_list=[]
-            # 判断传入的le是否为int类型
-            # 若score是字母，特殊字符的时候，返回输入正确的值
-            # 若score是小数，将score加一在判断。
-            try :
-                sc=int(score)
-                if sc<float(score):
-                    sc+=1
-            except :
-                member_list=['请输入正确的数值']
-                ret_dic={
-                    'members':member_list
-                }
-                return ret_dic
-            # 方法一：从数据库中查找所有用户，
-            # 逐个遍历，找到积分大于给定积分的用户，增添进member_list中
-            members=Member.query.all()
-            for mem in members:
-                if mem.score>=sc:
-                    member_info = {"uid": mem.uid,'tel':mem.tel,'discount':mem.discount,'score':mem.score,'active':mem.active}
-                    member_list.append(member_info)
-            if len(member_list)==0:
-                ret_dic= {
+    def get_member_byScore(cls, score):
+        member_list = []
+        # 判断传入的le是否为int类型
+        # 若score是字母，特殊字符的时候，返回输入正确的值
+        # 若score是小数，将score加一在判断。
+        try:
+            sc = int(score)
+            if sc < float(score):
+                sc += 1
+        except:
+            member_list = ['请输入正确的数值']
+            ret_dic = {
+                'members': member_list
+            }
+            return ret_dic
+        # 方法一：从数据库中查找所有用户，
+        # 逐个遍历，找到积分大于给定积分的用户，增添进member_list中
+        members = Member.query.all()
+        for mem in members:
+            if mem.score >= sc:
+                member_info = {"uid": mem.uid, 'tel': mem.tel, 'discount': mem.discount, 'score': mem.score,
+                               'active': mem.active}
+                member_list.append(member_info)
+        if len(member_list) == 0:
+            ret_dic = {
                 "count": 0,
                 "members": member_list
-                }
-            else:
-                ret_dic = {
+            }
+        else:
+            ret_dic = {
                 "count": len(member_list),
                 "members": member_list
-                }
-            return ret_dic
-            # 方法二：从数据库中查找到积分大于给定积分的用户，遍历增添进member_list中
-            # members = Member.query.filter(Member.score >=int(sc))
-            # for mem in members:
-            #     member_list.append(mem)
-            # ret_dic={
-            #  "count":len(member_list),
-            #  "members":member_list
-            # }
-            # return ret_dic
+            }
+        return ret_dic
+        # 方法二：从数据库中查找到积分大于给定积分的用户，遍历增添进member_list中
+        # members = Member.query.filter(Member.score >=int(sc))
+        # for mem in members:
+        #     member_list.append(mem)
+        # ret_dic={
+        #  "count":len(member_list),
+        #  "members":member_list
+        # }
+        # return ret_dic
 
-
-    # 根据uid，修改tel,discount,score,active
+    #根据uid，修改tel,discount,score,active
     @classmethod
-    def update_msg_by_uid(cls, uid, user_info):
+    def update_msg_by_uid(cls, uid,user_info):
         member_list = []
+
         member = Member.query.filter(Member.uid == user_info['uid']).first()
         member_info = {"uid": int(member.uid), "tel": user_info['tel'], "discount": user_info['discount'],
                        "score": user_info['score'], "active": user_info['active']}
@@ -135,7 +136,6 @@ class Member(db.Model):
             "members": member_list
         }
         return ret_dic
-
 
     # 根据uid注销
     @classmethod
@@ -153,3 +153,17 @@ class Member(db.Model):
                 }
                 return ret_dic
         return {}
+
+    #查询所有用户：
+    @classmethod
+    def get_all_members(cls):
+        member_list=[]
+        member=Member.query.all()
+        for mem in member:
+            member_info = {"uid": mem.uid, 'tel': mem.tel, 'discount': mem.discount, 'score': mem.score,
+                               'active': mem.active}
+            member_list.append(member_info)
+        ret_dic={
+            'members':member_list
+        }
+        return ret_dic
