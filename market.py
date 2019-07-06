@@ -86,9 +86,22 @@ def surpermark_member(condition=None):
             uid = int(condition.split("_")[-1])
             score = int(request.form['score'])
             ret_dic = Member.update_member_score(uid, score)
-            ret_dic['return_code'] = 200
-            ret_dic['return_msg'] = 'update score success'
-            return jsonify(ret_dic)
+
+            if len(ret_dic) == 0:
+                ret_dic['return_code'] = 500
+                ret_dic['return_msg'] = '用户未注册'
+                return jsonify(ret_dic)
+
+            elif score>0 or score ==0:
+                ret_dic['return_code'] = 200
+                ret_dic['return_msg'] = 'update score success'
+                return jsonify(ret_dic)
+            elif score<0:
+                ret_dic = {
+                    'return_code': 500,
+                    'return_msg': '积分不能为负数，请输入正确的积分值'
+                }
+                return jsonify(ret_dic)
 
 
 @app.route('/member', methods=['PUT'])
@@ -130,7 +143,6 @@ def delete_member(condition=None):
             ret_dic['return_msg'] = 'Delete user success'
         print(ret_dic)
         return jsonify(ret_dic)
-
 
 
 

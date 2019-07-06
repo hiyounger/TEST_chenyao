@@ -50,6 +50,10 @@ class Member(db.Model):
     @classmethod
     def update_member_score(cls, uid, score):
         member = Member.query.filter(Member.uid == uid).first()
+        if member == None:
+            ret_dic = {}
+            return ret_dic
+
         score_before = member.score
         member.score = score_before + score
         db.session.commit()
