@@ -120,7 +120,7 @@ def get_members_byScore():
         ret_dict['return_msg'] = "Filter user false"
     if ret_dict['return_code']==200:
         ret_dict['return_msg'] = "Filter user success"
-    print (ret_dict)
+
     return jsonify(ret_dict)
 
 
