@@ -24,28 +24,39 @@ class Member(db.Model):
         return ret_dic
 
 
+
     # 根据手机号查找会员列表  ---liu
     @classmethod
     def search_by_tel(cls, tel):
         member_list = []
-        type= tel.isdigit()
-        if len(tel) == 11 and type == True :
-            member = Member.query.filter(Member.tel.endswith(tel)).first()
+        type = tel.isdigit()
+        member = Member.query.filter(Member.tel.endswith(tel)).first()
+        if len(tel) == 11 and type == True and member != None:
             member_info = {'uid': member.uid, 'tel': member.tel, 'discount': member.discount, 'score': member.score,
                            'active': member.active}
             member_list.append(member_info)
-        elif len(tel) == 4 and type == True:
+            ret_dic = {
+                'count': len(member_list),
+                'members': member_list
+            }
+            return ret_dic
+        elif len(tel) == 4 and type == True and member != None:
             db_query = Member.query.filter(Member.tel.endswith(tel))
             for member in db_query:
                 member_info = {'uid': member.uid, 'tel': member.tel, 'discount': member.discount, 'score': member.score,
                                'active': member.active}
                 member_list.append(member_info)
-        ret_dic = {
-            'count': len(member_list),
-            'members': member_list
-        }
-        return ret_dic
-
+                ret_dic = {
+                    'count': len(member_list),
+                    'members': member_list
+                }
+                return ret_dic
+        else:
+            ret_dic={
+                'return_code':400,
+                'return_msg':'Get Member by tel failed'
+            }
+            return ret_dic
 
 
     # 根据实付金额更改用户积分杨俊
@@ -95,6 +106,7 @@ class Member(db.Model):
         except:
             member_list = ['请输入正确的数值']
             ret_dic = {
+                'return_code':400,
                 'members': member_list
             }
             return ret_dic
@@ -111,13 +123,16 @@ class Member(db.Model):
                 "count": 0,
                 "members": member_list
             }
+            ret_dic['return_code'] = 200
         else:
             ret_dic = {
                 "count": len(member_list),
                 "members": member_list
             }
+            ret_dic['return_code'] = 200
         return ret_dic
         # 方法二：从数据库中查找到积分大于给定积分的用户，遍历增添进member_list中
+        #
         # members = Member.query.filter(Member.score >=int(sc))
         # for mem in members:
         #     member_list.append(mem)
