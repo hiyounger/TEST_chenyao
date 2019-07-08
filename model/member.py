@@ -87,6 +87,7 @@ class Member(db.Model):
         except:
             member_list = ['请输入正确的数值']
             ret_dic = {
+                'return_code':400,
                 'members': member_list
             }
             return ret_dic
@@ -103,11 +104,13 @@ class Member(db.Model):
                 "count": 0,
                 "members": member_list
             }
+            ret_dic['return_code'] = 200
         else:
             ret_dic = {
                 "count": len(member_list),
                 "members": member_list
             }
+            ret_dic['return_code'] = 200
         return ret_dic
         # 方法二：从数据库中查找到积分大于给定积分的用户，遍历增添进member_list中
         # members = Member.query.filter(Member.score >=int(sc))
