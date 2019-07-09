@@ -50,7 +50,7 @@ class Member(db.Model):
                     'count': len(member_list),
                     'members': member_list
                 }
-                return ret_dic
+            return ret_dic
         else:
             ret_dic={
                 'return_code':400,
@@ -106,7 +106,7 @@ class Member(db.Model):
         except:
             member_list = ['请输入正确的数值']
             ret_dic = {
-                'return_code':400,
+                'return_code':500,
                 'members': member_list
             }
             return ret_dic
