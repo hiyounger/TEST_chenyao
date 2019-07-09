@@ -143,18 +143,50 @@ class Member(db.Model):
         # return ret_dic
 
 
-    #根据uid，修改用户信息    ---陈耀
+    #根据uid，修改用户信息   陈耀
     @classmethod
-    def update_msg_by_uid(cls, uid,user_info):
-        member_list = []
-        member = Member.query.filter(Member.uid == uid).first()
-        member_info = {"uid": int(member.uid), "tel": user_info['tel'], "discount": user_info['discount'],
-                       "score": user_info['score'], "active": user_info['active']}
-        member_list.append(member_info)
-        db.session.commit()
-        ret_dic = {
-            "members": member_list
-        }
+    def update_member_by_uid(cls, uid, member, new_tel, new_discount, new_score, new_active):
+        if uid == "" or new_tel == "" or new_discount == "" or new_score == "" or new_active == "":
+            ret_dic = {"return_code": "400",
+                       "return_msg": "修改的值不能为空"}
+            return ret_dic
+        elif new_active != "0" and new_active != "1":
+            ret_dic = {"return_code": "400",
+                       "return_msg": "激活状态只能为0或1"}
+            return ret_dic
+        elif float(new_discount) < 0 and float(new_discount) > 1:
+            ret_dic = {"renturn_code": "400",
+                       "return_msg": "会员折扣应该在0~1之间"
+                       }
+            return ret_dic
+        elif int(new_score) < 0:
+            ret_dic = {"return_code": "400",
+                       "return_msg": "积分不能为负数"}
+            return ret_dic
+        elif len(new_tel) != 11:
+            ret_dic = {"return_code": "400",
+                       "return_msg": "电话号码应该为11位数字"}
+            return ret_dic
+
+        try:
+            new_tel = int(new_tel)
+        except:
+            ret_dic = {"return_code": "400",
+                       "return_msg": "电话号码应该为数字"}
+            return ret_dic
+
+        member.tel = str(new_tel)
+        member.active = int(new_active)
+        member.discount = float(new_discount)
+        member.score = int(new_score)
+        try:
+            db.session.commit()
+        except:
+            ret_dic = {"return_code": "400",
+                       "return_msg": "手机号是唯一的，您输入的手机号数据库的列表中已存在"}
+            return ret_dic
+        ret_dic = {"uid": member.uid, 'tel': member.tel, 'discount': member.discount,
+                   'score': member.score, 'active': member.active}
         return ret_dic
 
 
