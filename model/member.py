@@ -50,7 +50,7 @@ class Member(db.Model):
                     'count': len(member_list),
                     'members': member_list
                 }
-                return ret_dic
+            return ret_dic
         else:
             ret_dic={
                 'return_code':400,

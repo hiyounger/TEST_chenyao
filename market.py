@@ -91,7 +91,6 @@ def get_members_by_tel(condition=None):
                 }
                 return jsonify(ret_dic)
             ret_mem = Member.query.filter(Member.uid == uid)
-
             member_list = []
             for mem in ret_mem:
                 member_info = {"uid": mem.uid, "tel": mem.tel, "discount": mem.discount, "score": mem.score,
