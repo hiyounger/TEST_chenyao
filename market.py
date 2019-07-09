@@ -115,9 +115,11 @@ def get_members_by_tel(condition=None):
 def get_members_byScore():
     score = request.args['le']
     ret_dict = Member.get_member_byScore(score)
-    ret_dict['return_code'] = 200
-    ret_dict['return_msg'] = "Filter user success"
-    print (ret_dict)
+    if ret_dict['return_code']==500:
+        ret_dict['return_msg'] = "Filter user false"
+    if ret_dict['return_code']==200:
+        ret_dict['return_msg'] = "Filter user success"
+
     return jsonify(ret_dict)
 
 
